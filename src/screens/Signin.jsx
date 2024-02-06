@@ -14,7 +14,7 @@ import {
 import React, {useState} from 'react';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 
-const Signin = () => {
+const Signin = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -64,7 +64,7 @@ const Signin = () => {
         </View>
         <View style={styles.navigateContainer}>
           <Text style={styles.navigateText}>Don't have an account?</Text>
-          <Pressable>
+          <Pressable onPress={() => navigation.navigate('Signup')}>
             <Text
               style={[styles.navigateText, {opacity: 0.7, fontWeight: '900'}]}>
               Sign up
