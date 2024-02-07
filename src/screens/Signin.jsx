@@ -21,6 +21,7 @@ const Signin = ({navigation}) => {
   const handleSignIn = () => {
     setEmail('');
     setPassword('');
+    navigation.replace('Tab');
   };
 
   return (
