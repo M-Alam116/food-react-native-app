@@ -20,7 +20,7 @@ import {Category} from '../data/CategoryData';
 import {BurgerData, PizzaData, FriesData, FruitData} from '../data/FoodData';
 import RestaurantCard from '../components/RestaurantCard';
 
-const HomeScreen = () => {
+const HomeScreen = ({navigation}) => {
   const [searchText, setSearchText] = useState('');
   const [activeCategory, setActiveCategory] = useState('Pizza');
   const [category, setCategory] = useState(PizzaData);
@@ -58,7 +58,7 @@ const HomeScreen = () => {
         <HeaderBar title="Search Food" />
 
         {/* Text line */}
-        <View style={{marginVertical: 10}}>
+        <View style={styles.mainText}>
           <Text style={styles.ScreenTitleUp}>Let's eat</Text>
           <Text style={styles.ScreenTitleBottom}>Nutrious food</Text>
         </View>
@@ -133,7 +133,12 @@ const HomeScreen = () => {
           keyExtractor={item => item.id}
           renderItem={({item}) => {
             return (
-              <TouchableOpacity onPress={() => {}}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.push('Detail', {
+                    item: item,
+                  });
+                }}>
                 <FoodCard
                   id={item.id}
                   type={item.type}
@@ -149,7 +154,10 @@ const HomeScreen = () => {
 
         {/* Restaurants list */}
         <Text style={styles.restaurantText}>Top Restaurants</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.restaurantContainer}>
           <RestaurantCard />
           <RestaurantCard />
         </ScrollView>
@@ -162,8 +170,11 @@ const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
     backgroundColor: COLORS.whiteColor,
+    marginBottom: 90,
+  },
+  mainText: {
+    marginVertical: 10,
     paddingHorizontal: 20,
-    marginBottom: 100,
   },
   ScreenTitleUp: {
     fontSize: 28,
@@ -184,7 +195,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     backgroundColor: COLORS.whiteColor,
     alignItems: 'center',
-    marginVertical: 20,
+    margin: 20,
     elevation: 10,
   },
   InputIcon: {
@@ -201,9 +212,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 20,
     marginBottom: 10,
+    paddingHorizontal: 20,
   },
   FlatListContainer: {
     gap: 20,
+    paddingHorizontal: 20,
   },
   EmptyListContainer: {
     width: Dimensions.get('window').width - 60,
@@ -222,7 +235,12 @@ const styles = StyleSheet.create({
     color: COLORS.blackColor,
     fontWeight: '900',
     opacity: 0.8,
-    marginVertical: 20,
+    margin: 20,
+    marginBottom: 10,
+  },
+  restaurantContainer: {
+    paddingHorizontal: 20,
+    gap: 20,
   },
 });
 

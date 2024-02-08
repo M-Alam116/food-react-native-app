@@ -30,11 +30,15 @@ const RestaurantCard = ({image, name, location}) => {
 
 const styles = StyleSheet.create({
   container: {
-    width: 250,
-    padding: 10,
+    width: 275,
+    padding: 20,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
+    elevation: 10,
+    borderRadius: 25,
+    backgroundColor: '#fff',
+    marginBottom: 20,
   },
   image: {
     width: 100,

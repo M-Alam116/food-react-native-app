@@ -5,7 +5,7 @@ export const PizzaData = [
     image: require('../assets/pizza/pizza_margherita.png'),
     name: 'Margherita Pizza',
     subtitle: 'Classic cheese and tomato',
-    price: '280',
+    price: '1500',
     rating: 4.5,
     totalRatings: 320,
     description:
@@ -25,7 +25,7 @@ export const PizzaData = [
     image: require('../assets/pizza/pepperoni_pizza.png'),
     name: 'Pepperoni Pizza',
     subtitle: 'Spicy pepperoni with cheese',
-    price: '320',
+    price: '1400',
     rating: 4.7,
     totalRatings: 420,
     description:
@@ -44,7 +44,7 @@ export const PizzaData = [
     image: require('../assets/pizza/vegetarian_pizza.png'),
     name: 'Vegetarian Pizza',
     subtitle: 'Assorted veggies with cheese',
-    price: '300',
+    price: '1350',
     rating: 4.6,
     totalRatings: 380,
     description:
@@ -65,8 +65,8 @@ export const PizzaData = [
     image: require('../assets/pizza/hawaiian_pizza.png'),
     name: 'Hawaiian Pizza',
     subtitle: 'Ham and pineapple',
-    price: '310',
-    rating: 4.4,
+    price: '1550',
+    rating: 4.8,
     totalRatings: 290,
     description:
       'Transport yourself to a tropical paradise with our Hawaiian Pizza. Featuring a harmonious blend of sweet pineapple, savory ham, and melted mozzarella cheese, this pizza is a delicious escape from the ordinary. Our handcrafted dough provides the perfect canvas for this unique flavor combination, creating a crispy crust that complements the juicy toppings. Whether you’re craving a taste of the islands or simply love the sweet and savory contrast, our Hawaiian Pizza is sure to delight your palate.',
@@ -84,7 +84,7 @@ export const PizzaData = [
     image: require('../assets/pizza/MEAT_LOVER_BONANZA.png'),
     name: "Meat Lover's Pizza",
     subtitle: 'Variety of meats with cheese',
-    price: '350',
+    price: '1350',
     rating: 4.8,
     totalRatings: 520,
     description:
@@ -105,7 +105,7 @@ export const PizzaData = [
     image: require('../assets/pizza/bbq_chicken_cheese_pizza.png'),
     name: 'BBQ Chicken Pizza',
     subtitle: 'Grilled chicken with BBQ sauce',
-    price: '330',
+    price: '1430',
     rating: 4.6,
     totalRatings: 480,
     description:
@@ -124,7 +124,7 @@ export const PizzaData = [
     image: require('../assets/pizza/supreme_pizza.png'),
     name: 'Supreme Pizza',
     subtitle: 'Loaded with toppings',
-    price: '340',
+    price: '1340',
     rating: 4.7,
     totalRatings: 460,
     description:
@@ -146,7 +146,7 @@ export const PizzaData = [
     image: require('../assets/pizza/spinach_pizza.png'),
     name: 'Spinach & Feta Pizza',
     subtitle: 'Fresh spinach and creamy feta cheese',
-    price: '320',
+    price: '1520',
     rating: 4.5,
     totalRatings: 380,
     description:
@@ -167,7 +167,7 @@ export const PizzaData = [
     image: require('../assets/pizza/bbq_pork_pizza.png'),
     name: 'BBQ Pork Pizza',
     subtitle: 'Savory BBQ pork with cheese',
-    price: '340',
+    price: '1600',
     rating: 4.6,
     totalRatings: 420,
     description:
@@ -186,7 +186,7 @@ export const PizzaData = [
     image: require('../assets/pizza/seafood_pizza.png'),
     name: 'Seafood Delight Pizza',
     subtitle: 'An ocean-inspired treat',
-    price: '380',
+    price: '1380',
     rating: 4.8,
     totalRatings: 500,
     description:

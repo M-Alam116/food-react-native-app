@@ -4,7 +4,7 @@ import {StyleSheet, Text, View, Image, Dimensions} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {COLORS} from '../theme/Theme';
 
-const CARD_WIDTH = Dimensions.get('window').width * 0.42;
+const CARD_WIDTH = Dimensions.get('window').width * 0.45;
 
 const FoodCard = ({image, name, subtitle, price}) => {
   return (
@@ -26,13 +26,16 @@ const FoodCard = ({image, name, subtitle, price}) => {
 
 const styles = StyleSheet.create({
   cardContainer: {
+    justifyContent: 'space-between',
     gap: 15,
     width: CARD_WIDTH,
     alignItems: 'center',
     paddingVertical: 15,
-    paddingHorizontal: 5,
-    backgroundColor: 'lightgray',
+    paddingHorizontal: 10,
+    backgroundColor: '#fff',
+    elevation: 10,
     borderRadius: 25,
+    marginBottom: 20,
   },
   cardImage: {
     width: 130,
