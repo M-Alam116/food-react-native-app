@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import { COLORS } from '../theme/Theme';
 
 const Signup = ({navigation}) => {
   const [name, setName] = useState('');
@@ -35,7 +36,7 @@ const Signup = ({navigation}) => {
         contentContainerStyle={styles.scrollViewContainer}>
         <View style={styles.logoContainer}>
           <Image
-            source={require('../assets/logos/food-logo2.png')}
+            source={require('../assets/logos/food-logo1.png')}
             style={styles.logo}
           />
         </View>
@@ -133,7 +134,7 @@ const styles = StyleSheet.create({
     opacity: 0.8,
   },
   signinButton: {
-    backgroundColor: '#1f319d',
+    backgroundColor: COLORS.orangeColor,
     borderRadius: 8,
     padding: 20,
   },
