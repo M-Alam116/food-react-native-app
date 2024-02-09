@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import FoodCard from '../components/FoodCard';
 import HeaderBar from '../components/HeaderBar';
 import {COLORS} from '../theme/Theme';
@@ -19,15 +19,40 @@ import CategoryCard from '../components/CategoryCard';
 import {Category} from '../data/CategoryData';
 import {BurgerData, PizzaData, FriesData, FruitData} from '../data/FoodData';
 import RestaurantCard from '../components/RestaurantCard';
+import {RestaurantData} from '../data/RestaurantData';
 
 const HomeScreen = ({navigation}) => {
   const [searchText, setSearchText] = useState('');
   const [activeCategory, setActiveCategory] = useState('Pizza');
   const [category, setCategory] = useState(PizzaData);
+  const flatListRef = useRef(null);
 
-  const searchFood = () => {};
+  const searchFood = text => {
+    const filteredCategory = category.filter(item =>
+      item.name.toLowerCase().includes(text.toLowerCase()),
+    );
+    setCategory(filteredCategory);
+  };
+
   const resetSearchFood = () => {
     setSearchText('');
+    // Reset to original category data
+    switch (activeCategory) {
+      case 'Pizza':
+        setCategory(PizzaData);
+        break;
+      case 'Burger':
+        setCategory(BurgerData);
+        break;
+      case 'Fries':
+        setCategory(FriesData);
+        break;
+      case 'Fruit':
+        setCategory(FruitData);
+        break;
+      default:
+        break;
+    }
   };
 
   const handleCategoryPress = type => {
@@ -48,6 +73,9 @@ const HomeScreen = ({navigation}) => {
       default:
         break;
     }
+
+    // Reset scroll position to start of the list
+    flatListRef.current.scrollToIndex({index: 0});
   };
 
   return (
@@ -83,9 +111,13 @@ const HomeScreen = ({navigation}) => {
             value={searchText}
             onChangeText={text => {
               setSearchText(text);
-              searchFood(text);
+              if (text.length === 0) {
+                resetSearchFood();
+              } else {
+                searchFood(text);
+              }
             }}
-            placeholderTextColor={COLORS.primaryLightGreyHex}
+            placeholderTextColor={COLORS.blackColor}
             style={styles.TextInputContainer}
           />
           {searchText.length > 0 && (
@@ -121,6 +153,7 @@ const HomeScreen = ({navigation}) => {
 
         {/* Food List */}
         <FlatList
+          ref={flatListRef}
           horizontal
           ListEmptyComponent={
             <View style={styles.EmptyListContainer}>
@@ -158,8 +191,14 @@ const HomeScreen = ({navigation}) => {
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.restaurantContainer}>
-          <RestaurantCard />
-          <RestaurantCard />
+          {RestaurantData.map(data => (
+            <RestaurantCard
+              key={data.name}
+              name={data.name}
+              image={data.image}
+              location={data.location}
+            />
+          ))}
         </ScrollView>
       </ScrollView>
     </View>

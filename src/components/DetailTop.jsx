@@ -29,15 +29,6 @@ const DetailTop = ({name, price, rating, totalRatings, description, image}) => {
         </View>
         <View style={styles.priceContainer}>
           <Text style={styles.price}>PKR {price}</Text>
-          <View style={styles.priceController}>
-            <TouchableOpacity>
-              <Icon name="minus" size={18} color={COLORS.blackColor} />
-            </TouchableOpacity>
-            <Text style={styles.quantity}>1</Text>
-            <TouchableOpacity>
-              <Icon name="plus" size={18} color={COLORS.blackColor} />
-            </TouchableOpacity>
-          </View>
         </View>
       </View>
       <View style={styles.detail}>
@@ -97,21 +88,6 @@ const styles = StyleSheet.create({
   },
   price: {
     fontSize: 24,
-    fontWeight: '900',
-    color: COLORS.blackColor,
-  },
-  priceController: {
-    width: 120,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-evenly',
-    gap: 10,
-    backgroundColor: COLORS.orangeColor,
-    padding: 15,
-    borderRadius: 100,
-  },
-  quantity: {
-    fontSize: 20,
     fontWeight: '900',
     color: COLORS.blackColor,
   },

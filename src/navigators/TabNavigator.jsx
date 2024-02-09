@@ -18,7 +18,6 @@ const Tab = createBottomTabNavigator();
 const TabNavigator = () => {
   return (
     <Tab.Navigator
-      initialRouteName="Home"
       screenOptions={{
         tabBarHideOnKeyboard: true,
         headerShown: false,
@@ -83,15 +82,14 @@ const TabNavigator = () => {
 
 const styles = StyleSheet.create({
   tabBarStyle: {
-    height: 70,
+    height: 80,
     position: 'absolute',
     backgroundColor: COLORS.blackColor,
     borderTopWidth: 0,
-    elevation: 10,
     borderTopColor: 'transparent',
-    marginBottom: 10,
-    marginHorizontal: 20,
-    borderRadius: 20,
+    // marginBottom: 10,
+    // marginHorizontal: 20,
+    // borderRadius: 20,
   },
 });
 

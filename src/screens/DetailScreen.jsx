@@ -1,5 +1,11 @@
 /* eslint-disable prettier/prettier */
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React from 'react';
 import DetailTop from '../components/DetailTop';
 import {COLORS} from '../theme/Theme';
@@ -29,11 +35,15 @@ const DetailScreen = ({navigation, route}) => {
           ))}
         </View>
       </View>
+
+      <TouchableOpacity
+        style={styles.addCartBtn}
+        onPress={() => navigation.navigate('Cart')}>
+        <Text style={styles.addCartText}>Add to Cart</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 };
-
-export default DetailScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -64,4 +74,19 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     elevation: 5,
   },
+  addCartBtn: {
+    backgroundColor: COLORS.orangeColor,
+    padding: 20,
+    marginHorizontal: 20,
+    marginTop: 30,
+    borderRadius: 10,
+  },
+  addCartText: {
+    fontSize: 18,
+    fontWeight: '900',
+    color: COLORS.whiteColor,
+    textAlign: 'center',
+  },
 });
+
+export default DetailScreen;

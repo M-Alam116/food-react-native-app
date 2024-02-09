@@ -8,21 +8,18 @@ const RestaurantCard = ({image, name, location}) => {
   return (
     <View style={styles.container}>
       <View>
-        <Image
-          source={require('../assets/restaurant/restaurant1.jpg')}
-          style={styles.image}
-        />
+        <Image source={image} style={styles.image} />
       </View>
       <View style={styles.rightContainer}>
-        <Text style={styles.nameText}>FoodCave{'\n'}Restaurants</Text>
+        <Text style={styles.nameText}>{name}</Text>
         <View style={styles.ratingContainer}>
-          <Icon name="star" size={20} color={COLORS.orangeColor} />
-          <Icon name="star" size={20} color={COLORS.orangeColor} />
-          <Icon name="star" size={20} color={COLORS.orangeColor} />
-          <Icon name="star" size={20} color={COLORS.orangeColor} />
-          <Icon name="star" size={20} color={COLORS.orangeColor} />
+          <Icon name="star" size={17} color={COLORS.orangeColor} />
+          <Icon name="star" size={17} color={COLORS.orangeColor} />
+          <Icon name="star" size={17} color={COLORS.orangeColor} />
+          <Icon name="star" size={17} color={COLORS.orangeColor} />
+          <Icon name="star" size={17} color={COLORS.orangeColor} />
         </View>
-        <Text style={styles.location}>Islamabad, Pakistan</Text>
+        <Text style={styles.location}>{location}</Text>
       </View>
     </View>
   );
@@ -30,11 +27,13 @@ const RestaurantCard = ({image, name, location}) => {
 
 const styles = StyleSheet.create({
   container: {
-    width: 275,
-    padding: 20,
+    width: 270,
+    paddingHorizontal: 10,
+    paddingVertical: 20,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    justifyContent: 'center',
+    gap: 15,
     elevation: 10,
     borderRadius: 25,
     backgroundColor: '#fff',
@@ -49,7 +48,7 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   nameText: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '900',
     color: COLORS.blackColor,
     opacity: 0.7,
