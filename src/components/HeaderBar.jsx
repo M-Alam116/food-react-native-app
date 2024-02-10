@@ -1,15 +1,28 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {Image, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {COLORS} from '../theme/Theme';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {useNavigation} from '@react-navigation/native';
 
 const HeaderBar = ({title}) => {
+  const navigation = useNavigation();
+
+  const openDrawer = () => {
+    navigation.openDrawer();
+  };
   return (
     <View style={styles.HeaderContainer}>
-      <Icon name="menu" color={COLORS.blackColor} size={30} />
+      <TouchableOpacity onPress={openDrawer}>
+        <Icon name="menu" color={COLORS.blackColor} size={30} />
+      </TouchableOpacity>
       <Text style={styles.HeaderText}>{title}</Text>
-      <Image source={require('../assets/avatar.png')} style={styles.profile} />
+      <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+        <Image
+          source={require('../assets/avatar.png')}
+          style={styles.profile}
+        />
+      </TouchableOpacity>
     </View>
   );
 };

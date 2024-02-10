@@ -30,7 +30,7 @@ const Signin = ({navigation}) => {
       const response = await auth().signInWithEmailAndPassword(email, password);
 
       if (response.user) {
-        navigation.replace('Tab');
+        navigation.replace('Drawer');
         setEmail('');
         setPassword('');
         setError('');

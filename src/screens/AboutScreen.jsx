@@ -3,15 +3,15 @@ import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import HeaderBar from '../components/HeaderBar';
 
-const OrderHistoryScreen = () => {
+const AboutScreen = () => {
   return (
     <View>
-      <HeaderBar title={'Order History'} />
-      <Text>OrderHistoryScreen</Text>
+      <HeaderBar title={'About'} />
+      <Text>AboutScreen</Text>
     </View>
   );
 };
 
 const styles = StyleSheet.create({});
 
-export default OrderHistoryScreen;
+export default AboutScreen;
