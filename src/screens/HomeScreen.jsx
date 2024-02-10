@@ -20,6 +20,7 @@ import {Category} from '../data/CategoryData';
 import {BurgerData, PizzaData, FriesData, FruitData} from '../data/FoodData';
 import RestaurantCard from '../components/RestaurantCard';
 import {RestaurantData} from '../data/RestaurantData';
+import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 
 const HomeScreen = ({navigation}) => {
   const [searchText, setSearchText] = useState('');
@@ -78,9 +79,11 @@ const HomeScreen = ({navigation}) => {
     flatListRef.current.scrollToIndex({index: 0});
   };
 
+  const tabHeight = useBottomTabBarHeight();
+
   return (
     <View style={styles.screenContainer}>
-      <StatusBar backgroundColor="white" barStyle="dark-content" />
+      <StatusBar backgroundColor={COLORS.whiteColor} barStyle="dark-content" />
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Header */}
         <HeaderBar title="Search Food" />
@@ -190,7 +193,10 @@ const HomeScreen = ({navigation}) => {
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.restaurantContainer}>
+          contentContainerStyle={[
+            styles.restaurantContainer,
+            {marginBottom: tabHeight},
+          ]}>
           {RestaurantData.map(data => (
             <RestaurantCard
               key={data.name}
@@ -209,7 +215,6 @@ const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
     backgroundColor: COLORS.whiteColor,
-    marginBottom: 90,
   },
   mainText: {
     marginVertical: 10,

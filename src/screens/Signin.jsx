@@ -13,16 +13,31 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
-import { COLORS } from '../theme/Theme';
+import {COLORS} from '../theme/Theme';
+import auth from '@react-native-firebase/auth';
 
 const Signin = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState(null);
 
-  const handleSignIn = () => {
-    setEmail('');
-    setPassword('');
-    navigation.replace('Tab');
+  const handleSignIn = async () => {
+    try {
+      if (!email.length > 0 && !password.length > 0) {
+        setError('Email and Password fields are required');
+        return;
+      }
+      const response = await auth().signInWithEmailAndPassword(email, password);
+
+      if (response.user) {
+        navigation.replace('Tab');
+        setEmail('');
+        setPassword('');
+        setError('');
+      }
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   return (
@@ -43,18 +58,19 @@ const Signin = ({navigation}) => {
             placeholder="Email"
             style={styles.inputStyle}
             value={email}
-            onChange={value => setEmail(value)}
+            onChangeText={value => setEmail(value)}
           />
           <TextInput
             secureTextEntry
             placeholder="Password"
             style={styles.inputStyle}
             value={password}
-            onChange={value => setPassword(value)}
+            onChangeText={value => setPassword(value)}
           />
           <Pressable style={styles.signinButton} onPress={handleSignIn}>
             <Text style={styles.signinText}>Sign In</Text>
           </Pressable>
+          {error && <Text style={styles.errorText}>{error}</Text>}
         </View>
         <View style={styles.socialContainer}>
           <Text style={styles.navigateText}>Or sign in with</Text>
@@ -66,7 +82,13 @@ const Signin = ({navigation}) => {
         </View>
         <View style={styles.navigateContainer}>
           <Text style={styles.navigateText}>Don't have an account?</Text>
-          <Pressable onPress={() => navigation.navigate('Signup')}>
+          <Pressable
+            onPress={() => {
+              navigation.navigate('Signup');
+              setEmail('');
+              setPassword('');
+              setError('');
+            }}>
             <Text
               style={[styles.navigateText, {opacity: 0.7, fontWeight: '900'}]}>
               Sign up
@@ -82,7 +104,7 @@ const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
     padding: 30,
-    backgroundColor: '#ffffff',
+    backgroundColor: COLORS.whiteColor,
   },
   scrollViewContainer: {
     flex: 1,
@@ -103,7 +125,7 @@ const styles = StyleSheet.create({
   mainText: {
     fontSize: 24,
     fontWeight: '800',
-    color: '#000',
+    color: COLORS.blackColor,
     opacity: 0.5,
   },
   inputStyle: {
@@ -112,7 +134,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: 'lightgray',
     borderRadius: 8,
-    color: '#000',
+    color: COLORS.blackColor,
     fontSize: 16,
     fontWeight: '600',
     opacity: 0.8,
@@ -123,7 +145,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   signinText: {
-    color: '#fff',
+    color: COLORS.whiteColor,
     fontSize: 16,
     fontWeight: '700',
     textAlign: 'center',
@@ -144,11 +166,17 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   navigateText: {
-    color: '#000',
+    color: COLORS.blackColor,
     fontSize: 16,
     fontWeight: '700',
     textAlign: 'center',
     opacity: 0.5,
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 14,
+    fontWeight: '600',
+    textAlign: 'center',
   },
 });
 

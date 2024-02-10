@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "647019807468",
+    "project_id": "meal-master-6d9ed",
+    "storage_bucket": "meal-master-6d9ed.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:647019807468:android:31a8c446d5d75d7905dbc9",
+        "android_client_info": {
+          "package_name": "com.foodapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD1NkTtM_59ZsuxAY78KBICqlC0PI466cs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

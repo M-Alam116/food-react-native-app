@@ -10,22 +10,44 @@ import {
   View,
   TextInput,
   Pressable,
+  ToastAndroid,
 } from 'react-native';
 import React, {useState} from 'react';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
-import { COLORS } from '../theme/Theme';
+import {COLORS} from '../theme/Theme';
+import auth from '@react-native-firebase/auth';
 
 const Signup = ({navigation}) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState(null);
 
-  const handleSignIn = () => {
-    setName('');
-    setEmail('');
-    setPassword('');
-    setConfirmPassword('');
+  const handleSignUp = async () => {
+    try {
+      if (!email.length > 0 && !password.length > 0 && !name.length > 0) {
+        setError('All fields are required');
+        return;
+      }
+
+      const response = await auth().createUserWithEmailAndPassword(
+        email,
+        password,
+      );
+
+      // Once the user is successfully signed up, update their profile with the name
+      await response.user.updateProfile({
+        displayName: name,
+      });
+
+      ToastAndroid.show('User Signup successfully', ToastAndroid.LONG);
+      setError('');
+      setName('');
+      setEmail('');
+      setPassword('');
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   return (
@@ -46,31 +68,25 @@ const Signup = ({navigation}) => {
             placeholder="Full Name"
             style={styles.inputStyle}
             value={name}
-            onChange={value => setName(value)}
+            onChangeText={value => setName(value)}
           />
           <TextInput
             placeholder="Email"
             style={styles.inputStyle}
             value={email}
-            onChange={value => setEmail(value)}
+            onChangeText={value => setEmail(value)}
           />
           <TextInput
             secureTextEntry
             placeholder="Password"
             style={styles.inputStyle}
             value={password}
-            onChange={value => setPassword(value)}
+            onChangeText={value => setPassword(value)}
           />
-          <TextInput
-            secureTextEntry
-            placeholder="Confirm Password"
-            style={styles.inputStyle}
-            value={confirmPassword}
-            onChange={value => setConfirmPassword(value)}
-          />
-          <Pressable style={styles.signinButton} onPress={handleSignIn}>
+          <Pressable style={styles.signinButton} onPress={handleSignUp}>
             <Text style={styles.signinText}>Sign Up</Text>
           </Pressable>
+          {error && <Text style={styles.errorText}>{error}</Text>}
         </View>
         <View style={styles.socialContainer}>
           <Text style={styles.navigateText}>Or sign up with</Text>
@@ -82,7 +98,14 @@ const Signup = ({navigation}) => {
         </View>
         <View style={styles.navigateContainer}>
           <Text style={styles.navigateText}>Already have an account?</Text>
-          <Pressable onPress={() => navigation.navigate('Signin')}>
+          <Pressable
+            onPress={() => {
+              navigation.navigate('Signin');
+              setName('');
+              setEmail('');
+              setPassword('');
+              setError('');
+            }}>
             <Text
               style={[styles.navigateText, {opacity: 0.7, fontWeight: '900'}]}>
               Sign in
@@ -98,7 +121,7 @@ const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
     padding: 30,
-    backgroundColor: '#ffffff',
+    backgroundColor: COLORS.whiteColor,
   },
   scrollViewContainer: {
     flex: 1,
@@ -119,7 +142,7 @@ const styles = StyleSheet.create({
   mainText: {
     fontSize: 24,
     fontWeight: '800',
-    color: '#000',
+    color: COLORS.blackColor,
     opacity: 0.5,
   },
   inputStyle: {
@@ -128,7 +151,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: 'lightgray',
     borderRadius: 8,
-    color: '#000',
+    color: COLORS.blackColor,
     fontSize: 16,
     fontWeight: '600',
     opacity: 0.8,
@@ -139,7 +162,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   signinText: {
-    color: '#fff',
+    color: COLORS.whiteColor,
     fontSize: 16,
     fontWeight: '700',
     textAlign: 'center',
@@ -160,11 +183,17 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   navigateText: {
-    color: '#000',
+    color: COLORS.blackColor,
     fontSize: 16,
     fontWeight: '700',
     textAlign: 'center',
     opacity: 0.5,
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 14,
+    fontWeight: '600',
+    textAlign: 'center',
   },
 });
 
