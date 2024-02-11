@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import {StyleSheet, View, Text} from 'react-native';
+import {StyleSheet, View, Text, StatusBar} from 'react-native';
 import React, {useEffect} from 'react';
 import {COLORS} from '../theme/Theme';
 
@@ -11,6 +11,8 @@ const SplashScreen = ({navigation}) => {
   });
   return (
     <View style={styles.container}>
+      <StatusBar backgroundColor={COLORS.orangeColor}/>
+
       <Text style={styles.text}>Meal Master</Text>
     </View>
   );

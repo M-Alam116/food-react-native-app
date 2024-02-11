@@ -19,7 +19,7 @@ const HeaderBar = ({title}) => {
       <Text style={styles.HeaderText}>{title}</Text>
       <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
         <Image
-          source={require('../assets/avatar.png')}
+          source={require('../assets/other/avatar.png')}
           style={styles.profile}
         />
       </TouchableOpacity>
