@@ -7,10 +7,11 @@ import {COLORS} from '../theme/Theme';
 const CARD_WIDTH = Dimensions.get('window').width * 0.35;
 
 const FoodCard = ({image, name, subtitle, price}) => {
+
   return (
     <View style={styles.cardContainer}>
       <View>
-        <Image source={image} style={styles.cardImage} />
+        <Image source={{ uri: image }} style={styles.cardImage} />
       </View>
       <View>
         <Text style={styles.nameText}>{name}</Text>

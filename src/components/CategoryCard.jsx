@@ -13,7 +13,7 @@ const CategoryCard = ({image, title, active, onPress}) => {
             ? {backgroundColor: COLORS.orangeColor}
             : {backgroundColor: COLORS.whiteColor},
         ]}>
-        <Image source={image} style={styles.cardImage} />
+        <Image source={{ uri: image }} style={styles.cardImage} />
         <Text
           style={[
             styles.cardText,

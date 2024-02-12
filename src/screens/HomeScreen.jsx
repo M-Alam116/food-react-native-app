@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import {
   Dimensions,
   FlatList,
@@ -10,73 +9,112 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import FoodCard from '../components/FoodCard';
 import HeaderBar from '../components/HeaderBar';
-import {COLORS} from '../theme/Theme';
+import { COLORS } from '../theme/Theme';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import CategoryCard from '../components/CategoryCard';
-import {Category} from '../data/CategoryData';
-import {BurgerData, PizzaData, FriesData, FruitData} from '../data/FoodData';
 import RestaurantCard from '../components/RestaurantCard';
-import {RestaurantData} from '../data/RestaurantData';
-import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import firestore from '@react-native-firebase/firestore';
+import Loader from '../components/Loader';
 
-const HomeScreen = ({navigation}) => {
+const HomeScreen = ({ navigation }) => {
   const [searchText, setSearchText] = useState('');
+  const [restaurant, setRestaurant] = useState([]);
+  const [burgerData, setBurgerData] = useState([]);
+  const [pizzaData, setPizzaData] = useState([]);
+  const [friesData, setFriesData] = useState([]);
+  const [fruitData, setFruitData] = useState([]);
+  const [categoryList, setCategoryList] = useState([]);
   const [activeCategory, setActiveCategory] = useState('Pizza');
-  const [category, setCategory] = useState(PizzaData);
+  const [category, setCategory] = useState([]);
+  const [loading, setLoading] = useState(true);
   const flatListRef = useRef(null);
 
-  const searchFood = text => {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const burger = await fetchCategoryData('burger');
+        setBurgerData(burger);
+        const pizza = await fetchCategoryData('pizza');
+        setPizzaData(pizza);
+        const fries = await fetchCategoryData('fries');
+        setFriesData(fries);
+        const fruit = await fetchCategoryData('fruit');
+        setFruitData(fruit);
+        const categories = await fetchCategoryData('category');
+        setCategoryList(categories);
+        const restaurants = await fetchCategoryData('restaurant');
+        setRestaurant(restaurants);
+        setCategory(pizza);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+
+  const fetchCategoryData = async (collection) => {
+    const snapshot = await firestore().collection(collection).get();
+    const data = snapshot.docs.map(doc => doc.data());
+    return data;
+  };
+
+  const searchFood = (text) => {
     const filteredCategory = category.filter(item =>
       item.name.toLowerCase().includes(text.toLowerCase()),
     );
     setCategory(filteredCategory);
   };
 
+
   const resetSearchFood = () => {
     setSearchText('');
-    // Reset to original category data
     switch (activeCategory) {
       case 'Pizza':
-        setCategory(PizzaData);
+        setCategory(pizzaData);
         break;
       case 'Burger':
-        setCategory(BurgerData);
+        setCategory(burgerData);
         break;
       case 'Fries':
-        setCategory(FriesData);
+        setCategory(friesData);
         break;
       case 'Fruit':
-        setCategory(FruitData);
+        setCategory(fruitData);
         break;
       default:
         break;
     }
   };
 
-  const handleCategoryPress = type => {
+  const handleCategoryPress = (type) => {
     setActiveCategory(type);
     switch (type) {
       case 'Pizza':
-        setCategory(PizzaData);
+        setCategory(pizzaData);
         break;
       case 'Burger':
-        setCategory(BurgerData);
+        setCategory(burgerData);
         break;
       case 'Fries':
-        setCategory(FriesData);
+        setCategory(friesData);
         break;
       case 'Fruit':
-        setCategory(FruitData);
+        setCategory(fruitData);
         break;
       default:
         break;
     }
 
-    // Reset scroll position to start of the list
-    flatListRef.current.scrollToIndex({index: 0});
+    flatListRef.current.scrollToIndex({ index: 0 });
   };
 
   const tabHeight = useBottomTabBarHeight();
@@ -85,16 +123,13 @@ const HomeScreen = ({navigation}) => {
     <View style={styles.screenContainer}>
       <StatusBar backgroundColor={COLORS.whiteColor} barStyle="dark-content" />
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Header */}
         <HeaderBar title="Search Food" />
 
-        {/* Text line */}
         <View style={styles.mainText}>
           <Text style={styles.ScreenTitleUp}>Let's eat</Text>
           <Text style={styles.ScreenTitleBottom}>Nutrious food</Text>
         </View>
 
-        {/* Search field */}
         <View style={styles.InputContainerComponent}>
           <TouchableOpacity
             onPress={() => {
@@ -138,24 +173,22 @@ const HomeScreen = ({navigation}) => {
           )}
         </View>
 
-        {/* Category list */}
-        <ScrollView
+        {loading ? <Loader /> : <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.categoryContainer}>
-          {Category.map(data => (
+          {categoryList.map((data, index) => (
             <CategoryCard
-              key={data.title}
+              key={index}
               image={data.image}
               title={data.title}
               active={activeCategory === data.title}
               onPress={() => handleCategoryPress(data.title)}
             />
           ))}
-        </ScrollView>
+        </ScrollView>}
 
-        {/* Food List */}
-        <FlatList
+        {loading ? <Loader /> : <FlatList
           ref={flatListRef}
           horizontal
           ListEmptyComponent={
@@ -167,7 +200,7 @@ const HomeScreen = ({navigation}) => {
           data={category}
           contentContainerStyle={styles.FlatListContainer}
           keyExtractor={item => item.id}
-          renderItem={({item}) => {
+          renderItem={({ item }) => {
             return (
               <TouchableOpacity
                 onPress={() => {
@@ -176,6 +209,7 @@ const HomeScreen = ({navigation}) => {
                   });
                 }}>
                 <FoodCard
+                  key={item.id}
                   id={item.id}
                   type={item.type}
                   image={item.image}
@@ -186,26 +220,27 @@ const HomeScreen = ({navigation}) => {
               </TouchableOpacity>
             );
           }}
-        />
+        />}
 
-        {/* Restaurants list */}
         <Text style={styles.restaurantText}>Top Restaurants</Text>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={[
-            styles.restaurantContainer,
-            {marginBottom: tabHeight},
-          ]}>
-          {RestaurantData.map(data => (
-            <RestaurantCard
-              key={data.name}
-              name={data.name}
-              image={data.image}
-              location={data.location}
-            />
-          ))}
-        </ScrollView>
+        {
+          loading ? <Loader /> : <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={[
+              styles.restaurantContainer,
+              { marginBottom: tabHeight },
+            ]}>
+            {restaurant.map((data, index) => (
+              <RestaurantCard
+                key={index}
+                name={data.name}
+                image={data.image}
+                location={data.location}
+              />
+            ))}
+          </ScrollView>
+        }
       </ScrollView>
     </View>
   );

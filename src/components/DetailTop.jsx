@@ -4,11 +4,19 @@ import React from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {COLORS} from '../theme/Theme';
 
-const DetailTop = ({name, price, rating, totalRatings, description, image}) => {
+const DetailTop = ({
+  name,
+  price,
+  rating,
+  totalRatings,
+  description,
+  image,
+  navigation,
+}) => {
   return (
     <View style={styles.mainContainer}>
       <View style={styles.icons}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.pop()}>
           <Icon name="arrow-left" size={25} color={COLORS.blackColor} />
         </TouchableOpacity>
         <TouchableOpacity>
@@ -16,7 +24,7 @@ const DetailTop = ({name, price, rating, totalRatings, description, image}) => {
         </TouchableOpacity>
       </View>
       <View style={styles.imageContainer}>
-        <Image source={image} style={styles.image} />
+        <Image source={{uri: image}} style={styles.image} />
       </View>
       <View style={styles.detailContainer}>
         <View>

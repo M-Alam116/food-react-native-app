@@ -8,7 +8,7 @@ const RestaurantCard = ({image, name, location}) => {
   return (
     <View style={styles.container}>
       <View>
-        <Image source={image} style={styles.image} />
+        <Image source={{uri: image}} style={styles.image} />
       </View>
       <View style={styles.rightContainer}>
         <Text style={styles.nameText}>{name}</Text>

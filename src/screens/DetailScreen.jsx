@@ -8,22 +8,24 @@ import {
 } from 'react-native';
 import React from 'react';
 import DetailTop from '../components/DetailTop';
-import {COLORS} from '../theme/Theme';
+import { COLORS } from '../theme/Theme';
 
-const DetailScreen = ({navigation, route}) => {
-  const {item} = route.params;
+const DetailScreen = ({ navigation, route }) => {
+  const { item } = route.params;
 
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
       contentContainerStyle={styles.container}>
       <DetailTop
+        key={item.id}
         name={item.name}
         image={item.image}
         description={item.description}
         price={item.price}
         rating={item.rating}
         totalRatings={item.totalRatings}
+        navigation={navigation}
       />
       <View style={styles.ingredientsContainer}>
         <Text style={styles.ingredientsText}>Ingredients</Text>
