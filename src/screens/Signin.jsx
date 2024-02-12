@@ -11,12 +11,13 @@ import {
   TextInput,
   Pressable,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
-import {COLORS} from '../theme/Theme';
+import { COLORS } from '../theme/Theme';
 import auth from '@react-native-firebase/auth';
+import { StackActions } from '@react-navigation/native';
 
-const Signin = ({navigation}) => {
+const Signin = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
@@ -30,7 +31,7 @@ const Signin = ({navigation}) => {
       const response = await auth().signInWithEmailAndPassword(email, password);
 
       if (response.user) {
-        navigation.replace('Drawer');
+        navigation.dispatch(StackActions.replace('Drawer'))  // use dispatch so that can can't move back to splash screen
         setEmail('');
         setPassword('');
         setError('');
@@ -90,7 +91,7 @@ const Signin = ({navigation}) => {
               setError('');
             }}>
             <Text
-              style={[styles.navigateText, {opacity: 0.7, fontWeight: '900'}]}>
+              style={[styles.navigateText, { opacity: 0.7, fontWeight: '900' }]}>
               Sign up
             </Text>
           </Pressable>

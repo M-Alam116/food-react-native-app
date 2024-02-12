@@ -1,17 +1,22 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
 import {
-  ImageBackground,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
   Image,
 } from 'react-native';
+import { COLORS } from '../theme/Theme';
 import Icon from 'react-native-vector-icons/AntDesign';
-import {COLORS} from '../theme/Theme';
+import Exit from 'react-native-vector-icons/MaterialIcons';
 
-const DrawerCard = ({state, navigation}) => {
+import auth from '@react-native-firebase/auth';
+import { StackActions } from '@react-navigation/native';
+
+const DrawerCard = ({ state, navigation }) => {
+  const currrentuser = auth().currentUser
+
   const links = [
     {
       icon: <Icon name="home" size={25} color={COLORS.blackColor} />,
@@ -32,43 +37,56 @@ const DrawerCard = ({state, navigation}) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.infoContainer}>
-        <Image
-          source={require('../assets/other/avatar.png')}
-          style={styles.profileImage}
-        />
-        <Text style={styles.nameText}>Muhammad Alam</Text>
-        <Text style={styles.emailText}>alam@gmail.com</Text>
+      <View>
+        <View style={styles.infoContainer}>
+          <Image
+            source={require('../assets/other/avatar.png')}
+            style={styles.profileImage}
+          />
+          <Text style={styles.nameText}>{currrentuser.displayName}</Text>
+          <Text style={styles.emailText}>{currrentuser.email}</Text>
+        </View>
+
+        <View style={styles.linksContainer}>
+          {links.map((item, index) => (
+            <TouchableOpacity
+              key={index}
+              onPress={() => navigation.navigate(item.navigationTo)}>
+              <View
+                style={[
+                  styles.innerContainer,
+                  state.routeNames[state.index] === item.navigationTo && {
+                    backgroundColor: 'lightblue',
+                  },
+                ]}>
+                <View>{item.icon}</View>
+                <Text style={styles.titleText}>{item.title}</Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </View>
       </View>
 
-      <View style={styles.linksContainer}>
-        {links.map((item, index) => (
-          <TouchableOpacity
-            key={index}
-            onPress={() => navigation.navigate(item.navigationTo)}>
-            <View
-              style={[
-                styles.innerContainer,
-                state.routeNames[state.index] === item.navigationTo && {
-                  backgroundColor: 'lightblue',
-                },
-              ]}>
-              <View>{item.icon}</View>
-              <Text style={styles.titleText}>{item.title}</Text>
-            </View>
-          </TouchableOpacity>
-        ))}
-      </View>
+      <TouchableOpacity style={styles.logout} onPress={async () => {
+        await auth().signOut()
+        navigation.dispatch(StackActions.replace('Signin'))
+      }}>
+        <Exit name="exit-to-app" size={25} color={COLORS.blackColor} />
+        <Text style={styles.titleText}>Sign Out</Text>
+      </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    justifyContent: 'space-between',
     gap: 20,
   },
   linksContainer: {
     marginRight: 10,
+    marginTop: 40,
   },
   innerContainer: {
     flexDirection: 'row',
@@ -102,6 +120,12 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: COLORS.blackColor,
   },
+  logout: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 15,
+    padding: 15,
+  }
 });
 
 export default DrawerCard;
