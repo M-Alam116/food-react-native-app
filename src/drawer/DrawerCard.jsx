@@ -1,21 +1,26 @@
 /* eslint-disable prettier/prettier */
-import React from 'react';
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  Image,
-} from 'react-native';
-import { COLORS } from '../theme/Theme';
+import React, {useState} from 'react';
+import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
+import {COLORS} from '../theme/Theme';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Exit from 'react-native-vector-icons/MaterialIcons';
 
+import {StackActions} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
-import { StackActions } from '@react-navigation/native';
+import firestore from '@react-native-firebase/firestore';
 
-const DrawerCard = ({ state, navigation }) => {
-  const currrentuser = auth().currentUser
+const DrawerCard = ({state, navigation}) => {
+  const [username, setUsername] = useState('');
+  const currrentuser = auth().currentUser;
+  const userId = currrentuser.uid;
+  const db = firestore();
+
+  const getUsername = async () => {
+    const user = await db.collection('users').doc(userId).get();
+    setUsername(user._data.name);
+  };
+
+  getUsername();
 
   const links = [
     {
@@ -43,7 +48,7 @@ const DrawerCard = ({ state, navigation }) => {
             source={require('../assets/other/avatar.png')}
             style={styles.profileImage}
           />
-          <Text style={styles.nameText}>{currrentuser.displayName}</Text>
+          <Text style={styles.nameText}>{username}</Text>
           <Text style={styles.emailText}>{currrentuser.email}</Text>
         </View>
 
@@ -67,10 +72,12 @@ const DrawerCard = ({ state, navigation }) => {
         </View>
       </View>
 
-      <TouchableOpacity style={styles.logout} onPress={async () => {
-        await auth().signOut()
-        navigation.dispatch(StackActions.replace('Signin'))
-      }}>
+      <TouchableOpacity
+        style={styles.logout}
+        onPress={async () => {
+          await auth().signOut();
+          navigation.dispatch(StackActions.replace('Signin'));
+        }}>
         <Exit name="exit-to-app" size={25} color={COLORS.blackColor} />
         <Text style={styles.titleText}>Sign Out</Text>
       </TouchableOpacity>
@@ -125,7 +132,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 15,
     padding: 15,
-  }
+  },
 });
 
 export default DrawerCard;

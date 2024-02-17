@@ -28,23 +28,23 @@ const CategoryCard = ({image, title, active, onPress}) => {
 
 const styles = StyleSheet.create({
   cardContainer: {
-    width: 140,
-    height: 50,
-    borderRadius: 50,
+    width: 110,
+    height: 35,
+    borderRadius: 100,
     padding: 7,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 15,
+    gap: 10,
     elevation: 10,
     marginVertical: 10,
   },
   cardText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '900',
   },
   cardImage: {
-    width: 40,
-    height: 40,
+    width: 30,
+    height: 30,
   },
 });
 

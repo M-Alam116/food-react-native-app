@@ -3,15 +3,22 @@ import React from 'react';
 import {StyleSheet, Text, View, Image, Dimensions} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {COLORS} from '../theme/Theme';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 const CARD_WIDTH = Dimensions.get('window').width * 0.35;
 
-const FoodCard = ({image, name, subtitle, price}) => {
-
+const FoodCard = ({
+  image,
+  name,
+  subtitle,
+  price,
+  onPressFavorite,
+  isFavorite,
+}) => {
   return (
     <View style={styles.cardContainer}>
       <View>
-        <Image source={{ uri: image }} style={styles.cardImage} />
+        <Image source={{uri: image}} style={styles.cardImage} />
       </View>
       <View>
         <Text style={styles.nameText}>{name}</Text>
@@ -19,7 +26,13 @@ const FoodCard = ({image, name, subtitle, price}) => {
       </View>
       <View style={styles.priceContainer}>
         <Text style={styles.priceText}>PKR {price}</Text>
-        <Icon name="favorite-outline" size={22} color="#000" />
+        <TouchableOpacity onPress={onPressFavorite}>
+          <Icon
+            name={isFavorite ? 'favorite' : 'favorite-outline'}
+            size={22}
+            color={isFavorite ? COLORS.orangeColor : COLORS.blackColor}
+          />
+        </TouchableOpacity>
       </View>
     </View>
   );

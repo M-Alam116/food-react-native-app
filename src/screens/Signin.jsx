@@ -41,6 +41,10 @@ const Signin = ({ navigation }) => {
     }
   };
 
+  setTimeout(() => {
+    setError(null);
+  }, 5000);
+
   return (
     <View style={styles.screenContainer}>
       <StatusBar backgroundColor="white" barStyle="dark-content" />

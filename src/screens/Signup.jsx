@@ -16,6 +16,7 @@ import React, {useState} from 'react';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import {COLORS} from '../theme/Theme';
 import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
 const Signup = ({navigation}) => {
   const [name, setName] = useState('');
@@ -23,9 +24,11 @@ const Signup = ({navigation}) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
 
+  const db = firestore();
+
   const handleSignUp = async () => {
     try {
-      if (!email.length > 0 && !password.length > 0 && !name.length > 0) {
+      if (!name || !email || !password) {
         setError('All fields are required');
         return;
       }
@@ -35,9 +38,11 @@ const Signup = ({navigation}) => {
         password,
       );
 
-      // Once the user is successfully signed up, update their profile with the name
-      await response.user.updateProfile({
-        displayName: name,
+      await db.collection('users').doc(response.user.uid).set({
+        name: name,
+        email: email,
+        profileImg: '',
+        cart: [],
       });
 
       ToastAndroid.show('User Signup successfully', ToastAndroid.LONG);
@@ -49,6 +54,10 @@ const Signup = ({navigation}) => {
       setError(err.message);
     }
   };
+
+  setTimeout(() => {
+    setError(null);
+  }, 5000);
 
   return (
     <View style={styles.screenContainer}>

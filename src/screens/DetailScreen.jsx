@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 import {
   ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -8,15 +9,48 @@ import {
 } from 'react-native';
 import React from 'react';
 import DetailTop from '../components/DetailTop';
-import { COLORS } from '../theme/Theme';
+import {COLORS} from '../theme/Theme';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 
-const DetailScreen = ({ navigation, route }) => {
-  const { item } = route.params;
+const DetailScreen = ({navigation, route}) => {
+  const {item} = route.params;
+
+  const db = firestore();
+  const currrentuser = auth().currentUser;
+
+  const handleAddToCart = async data => {
+    const userId = currrentuser.uid;
+    const user = await db.collection('users').doc(userId).get();
+    let userCart = [],
+      userCard = user._data.cart;
+    if (userCard.length > 0) {
+      let exits = false;
+      userCard.map(itm => {
+        if (itm.id === data.id) {
+          exits = true;
+          itm.quantity = itm.quantity + 1;
+        }
+      });
+
+      if (!exits) {
+        userCard.push(data);
+      }
+
+    } else {
+      userCard.push(data);
+    }
+
+    db.collection('users').doc(userId).update({
+      cart: userCard,
+    });
+  };
 
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
       contentContainerStyle={styles.container}>
+      <StatusBar backgroundColor={COLORS.whiteColor} barStyle="dark-content" />
       <DetailTop
         key={item.id}
         name={item.name}
@@ -40,7 +74,7 @@ const DetailScreen = ({ navigation, route }) => {
 
       <TouchableOpacity
         style={styles.addCartBtn}
-        onPress={() => navigation.navigate('Cart')}>
+        onPress={() => handleAddToCart(item)}>
         <Text style={styles.addCartText}>Add to Cart</Text>
       </TouchableOpacity>
     </ScrollView>

@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   Dimensions,
   FlatList,
@@ -9,18 +10,18 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import FoodCard from '../components/FoodCard';
 import HeaderBar from '../components/HeaderBar';
-import { COLORS } from '../theme/Theme';
+import {COLORS} from '../theme/Theme';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import CategoryCard from '../components/CategoryCard';
 import RestaurantCard from '../components/RestaurantCard';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 import firestore from '@react-native-firebase/firestore';
 import Loader from '../components/Loader';
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = ({navigation}) => {
   const [searchText, setSearchText] = useState('');
   const [restaurant, setRestaurant] = useState([]);
   const [burgerData, setBurgerData] = useState([]);
@@ -60,20 +61,18 @@ const HomeScreen = ({ navigation }) => {
     fetchData();
   }, []);
 
-
-  const fetchCategoryData = async (collection) => {
-    const snapshot = await firestore().collection(collection).get();
-    const data = snapshot.docs.map(doc => doc.data());
+  const fetchCategoryData = async collection => {
+    const collectionData = await firestore().collection(collection).get();
+    const data = collectionData.docs.map(doc => doc.data());
     return data;
   };
 
-  const searchFood = (text) => {
+  const searchFood = text => {
     const filteredCategory = category.filter(item =>
       item.name.toLowerCase().includes(text.toLowerCase()),
     );
     setCategory(filteredCategory);
   };
-
 
   const resetSearchFood = () => {
     setSearchText('');
@@ -95,7 +94,7 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
-  const handleCategoryPress = (type) => {
+  const handleCategoryPress = type => {
     setActiveCategory(type);
     switch (type) {
       case 'Pizza':
@@ -114,7 +113,34 @@ const HomeScreen = ({ navigation }) => {
         break;
     }
 
-    flatListRef.current.scrollToIndex({ index: 0 });
+    flatListRef.current.scrollToIndex({index: 0});
+  };
+
+  // Function to toggle favorite status
+  const toggleFavoriteStatus = async foodItemId => {
+    // Find the food item in the current category list
+    const updatedCategory = category.map(item => {
+      if (item.id === foodItemId) {
+        // Toggle the favorite status locally
+        const updatedItem = {...item, isFavorite: !item.isFavorite};
+        return updatedItem;
+      }
+      return item;
+    });
+    // Update the category state with the updated list
+    setCategory(updatedCategory);
+
+    // Update the Firestore document with the new favorite status
+    const foodItemRef = firestore()
+      .collection(activeCategory.toLowerCase())
+      .doc(foodItemId);
+    const foodItemDoc = await foodItemRef.get();
+    if (foodItemDoc.exists) {
+      // Update the Firestore document with the new favorite status
+      await foodItemRef.update({isFavorite: !foodItemDoc.data().isFavorite});
+    } else {
+      console.error('Food item not found in Firestore.');
+    }
   };
 
   const tabHeight = useBottomTabBarHeight();
@@ -173,63 +199,75 @@ const HomeScreen = ({ navigation }) => {
           )}
         </View>
 
-        {loading ? <Loader /> : <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.categoryContainer}>
-          {categoryList.map((data, index) => (
-            <CategoryCard
-              key={index}
-              image={data.image}
-              title={data.title}
-              active={activeCategory === data.title}
-              onPress={() => handleCategoryPress(data.title)}
-            />
-          ))}
-        </ScrollView>}
+        {loading ? (
+          <Loader />
+        ) : (
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.categoryContainer}>
+            {categoryList.map((data, index) => (
+              <CategoryCard
+                key={index}
+                image={data.image}
+                title={data.title}
+                active={activeCategory === data.title}
+                onPress={() => handleCategoryPress(data.title)}
+              />
+            ))}
+          </ScrollView>
+        )}
 
-        {loading ? <Loader /> : <FlatList
-          ref={flatListRef}
-          horizontal
-          ListEmptyComponent={
-            <View style={styles.EmptyListContainer}>
-              <Text style={styles.emptyText}>No food Available</Text>
-            </View>
-          }
-          showsHorizontalScrollIndicator={false}
-          data={category}
-          contentContainerStyle={styles.FlatListContainer}
-          keyExtractor={item => item.id}
-          renderItem={({ item }) => {
-            return (
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.push('Detail', {
-                    item: item,
-                  });
-                }}>
-                <FoodCard
-                  key={item.id}
-                  id={item.id}
-                  type={item.type}
-                  image={item.image}
-                  name={item.name}
-                  subtitle={item.subtitle}
-                  price={item.price}
-                />
-              </TouchableOpacity>
-            );
-          }}
-        />}
+        {loading ? (
+          <Loader />
+        ) : (
+          <FlatList
+            ref={flatListRef}
+            horizontal
+            ListEmptyComponent={
+              <View style={styles.EmptyListContainer}>
+                <Text style={styles.emptyText}>No food Available</Text>
+              </View>
+            }
+            showsHorizontalScrollIndicator={false}
+            data={category}
+            contentContainerStyle={styles.FlatListContainer}
+            keyExtractor={item => item.id}
+            renderItem={({item}) => {
+              return (
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.push('Detail', {
+                      item: item,
+                    });
+                  }}>
+                  <FoodCard
+                    key={item.id}
+                    id={item.id}
+                    type={item.type}
+                    image={item.image}
+                    name={item.name}
+                    subtitle={item.subtitle}
+                    price={item.price}
+                    onPressFavorite={() => toggleFavoriteStatus(item.id)}
+                    isFavorite={item.isFavorite}
+                  />
+                </TouchableOpacity>
+              );
+            }}
+          />
+        )}
 
         <Text style={styles.restaurantText}>Top Restaurants</Text>
-        {
-          loading ? <Loader /> : <ScrollView
+        {loading ? (
+          <Loader />
+        ) : (
+          <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={[
               styles.restaurantContainer,
-              { marginBottom: tabHeight },
+              {marginBottom: tabHeight},
             ]}>
             {restaurant.map((data, index) => (
               <RestaurantCard
@@ -240,7 +278,7 @@ const HomeScreen = ({ navigation }) => {
               />
             ))}
           </ScrollView>
-        }
+        )}
       </ScrollView>
     </View>
   );
@@ -282,7 +320,7 @@ const styles = StyleSheet.create({
   },
   TextInputContainer: {
     flex: 1,
-    height: 60,
+    height: 50,
     fontSize: 16,
     fontWeight: '500',
     color: COLORS.blackColor,

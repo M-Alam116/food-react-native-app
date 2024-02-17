@@ -37,9 +37,9 @@ export default CartItem;
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-around',
     alignItems: 'center',
-    gap: 15,
+    gap: 10,
     paddingHorizontal: 10,
     paddingVertical: 15,
     borderRadius: 25,
@@ -48,20 +48,20 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   image: {
-    width: 150,
-    height: 150,
+    width: 140,
+    height: 140,
   },
   rightContainer: {
     gap: 10,
   },
   nameText: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: '900',
     color: COLORS.blackColor,
     opacity: 0.7,
   },
   priceText: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: '900',
     color: COLORS.blackColor,
   },
@@ -72,15 +72,15 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: COLORS.orangeColor,
-    paddingHorizontal: 15,
-    paddingVertical: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
     borderRadius: 7,
   },
   quantity: {
     borderWidth: 2,
     borderColor: COLORS.orangeColor,
-    paddingHorizontal: 15,
-    paddingVertical: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 3,
     borderRadius: 7,
   },
   quantityText: {

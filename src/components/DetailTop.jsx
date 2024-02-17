@@ -27,15 +27,13 @@ const DetailTop = ({
         <Image source={{uri: image}} style={styles.image} />
       </View>
       <View style={styles.detailContainer}>
-        <View>
-          <Text style={styles.name}>{name}</Text>
+        <Text style={styles.name}>{name}</Text>
+        <View style={styles.priceContainer}>
           <View style={styles.ratingContainer}>
             <Icon name="star" size={18} color={COLORS.orangeColor} />
             <Text style={styles.ratingText}>{rating}</Text>
             <Text style={styles.ratingText}>({totalRatings})</Text>
           </View>
-        </View>
-        <View style={styles.priceContainer}>
           <Text style={styles.price}>PKR {price}</Text>
         </View>
       </View>
@@ -52,6 +50,7 @@ export default DetailTop;
 const styles = StyleSheet.create({
   mainContainer: {
     paddingHorizontal: 20,
+    paddingTop: 20,
   },
   icons: {
     flexDirection: 'row',
@@ -67,9 +66,6 @@ const styles = StyleSheet.create({
     height: 270,
   },
   detailContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'start',
     gap: 5,
   },
   name: {
@@ -85,6 +81,8 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   priceContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
     gap: 10,
   },
