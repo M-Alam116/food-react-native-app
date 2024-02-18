@@ -29,20 +29,24 @@ const CartScreen = () => {
         const doc = await db.collection('users').doc(currentuser.uid).get();
         if (doc.exists) {
           const userCart = doc._data.cart;
-          setCartData([...userCart]);
+          setCartData(userCart);
         } else {
           throw new Error('User data not found');
         }
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.log('Error fetching data: ' + error.message);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchData();
+    const unsubscribe = db
+      .collection('users')
+      .doc(currentuser.uid)
+      .onSnapshot(fetchData);
+
     // Return cleanup function to unsubscribe from listener when component unmounts
-    return () => {};
+    return () => unsubscribe();
   }, [currentuser.uid, db]);
 
   const getTotalPrice = () => {
