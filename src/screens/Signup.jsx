@@ -43,6 +43,8 @@ const Signup = ({navigation}) => {
         email: email,
         profileImg: '',
         cart: [],
+        favorite: [],
+        orderhistory: [],
       });
 
       ToastAndroid.show('User Signup successfully', ToastAndroid.LONG);

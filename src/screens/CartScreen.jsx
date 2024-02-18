@@ -7,13 +7,52 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import CartItem from '../components/CartItem';
 import HeaderBar from '../components/HeaderBar';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 import {COLORS} from '../theme/Theme';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
+import Loader from '../components/Loader';
+import EmptyComponent from '../components/EmptyComponent';
 
 const CartScreen = () => {
+  const [cartData, setCartData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const currentuser = auth().currentUser;
+  const db = firestore();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const doc = await db.collection('users').doc(currentuser.uid).get();
+        if (doc.exists) {
+          const userCart = doc._data.cart;
+          setCartData([...userCart]);
+        } else {
+          throw new Error('User data not found');
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+    // Return cleanup function to unsubscribe from listener when component unmounts
+    return () => {};
+  }, [currentuser.uid, db]);
+
+  const getTotalPrice = () => {
+    let totalPrice = 0;
+    cartData.forEach(item => {
+      totalPrice += item.price * item.quantity;
+    });
+    return totalPrice;
+  };
+
   const tabBarHeight = useBottomTabBarHeight();
 
   return (
@@ -24,36 +63,46 @@ const CartScreen = () => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollViewContainer}>
         <HeaderBar title={'My Cart List'} />
-        <CartItem />
-        <CartItem />
-        <CartItem />
-        <CartItem />
-        <CartItem />
+        {loading ? (
+          <Loader />
+        ) : cartData.length < 1 ? (
+          <EmptyComponent />
+        ) : (
+          cartData.map((item, index) => <CartItem key={index} item={item} />)
+        )}
       </ScrollView>
-      <View style={[styles.bottomContainer, {marginBottom: tabBarHeight}]}>
-        <View style={styles.totalPriceContainer}>
-          <Text style={styles.totalPriceText}>Total Price</Text>
-          <Text style={styles.totalPriceText}>PKR 3000</Text>
+
+      {cartData.length > 0 && (
+        <View style={[styles.bottomContainer, {marginBottom: tabBarHeight}]}>
+          <View style={styles.totalPriceContainer}>
+            <Text style={styles.totalPriceText}>Total Items</Text>
+            <Text style={styles.totalPriceText}>{cartData.length}</Text>
+          </View>
+          <View style={styles.totalPriceContainer}>
+            <Text style={styles.totalPriceText}>Total Price</Text>
+            <Text style={styles.totalPriceText}>PKR {getTotalPrice()}</Text>
+          </View>
+          <TouchableOpacity style={styles.checkoutBtn}>
+            <Text style={styles.checkoutText}>Checkout</Text>
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.checkoutBtn}>
-          <Text style={styles.checkoutText}>Checkout</Text>
-        </TouchableOpacity>
-      </View>
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   screenContainer: {
-    marginBottom: 230,
+    flex: 1,
+    justifyContent: 'space-between',
   },
   scrollViewContainer: {
     gap: 15,
     marginVertical: 10,
-    marginBottom: 30,
+    paddingBottom: 20,
   },
   bottomContainer: {
-    gap: 20,
+    gap: 10,
     paddingVertical: 20,
   },
   totalPriceContainer: {

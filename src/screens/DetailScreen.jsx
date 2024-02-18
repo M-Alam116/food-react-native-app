@@ -36,7 +36,6 @@ const DetailScreen = ({navigation, route}) => {
       if (!exits) {
         userCard.push(data);
       }
-
     } else {
       userCard.push(data);
     }
@@ -44,6 +43,8 @@ const DetailScreen = ({navigation, route}) => {
     db.collection('users').doc(userId).update({
       cart: userCard,
     });
+
+    navigation.navigate('Cart');
   };
 
   return (
