@@ -5,17 +5,21 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {COLORS} from '../theme/Theme';
 import {useFavorites} from '../store/FavoriteContext';
 
-const DetailTop = ({item, navigation}) => {
+const DetailTop = ({item, navigation, showBackIcon}) => {
   const {favorites, toggleFavorite} = useFavorites();
   const isFavorite = favorites.some(favorite => favorite.id === item.id);
 
   return (
     <View style={styles.mainContainer}>
       <View style={styles.icons}>
-        <TouchableOpacity onPress={() => navigation.pop()}>
-          <Icon name="arrow-left" size={25} color={COLORS.blackColor} />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => toggleFavorite(item)}>
+        {showBackIcon && (
+          <TouchableOpacity onPress={() => navigation.pop()}>
+            <Icon name="arrow-left" size={25} color={COLORS.blackColor} />
+          </TouchableOpacity>
+        )}
+        <TouchableOpacity
+          onPress={() => toggleFavorite(item)}
+          style={{marginLeft: 'auto'}}>
           <Icon
             name={isFavorite ? 'heart' : 'heart-o'}
             size={25}

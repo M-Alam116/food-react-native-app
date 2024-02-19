@@ -52,7 +52,12 @@ const DetailScreen = ({navigation, route}) => {
       showsVerticalScrollIndicator={false}
       contentContainerStyle={styles.container}>
       <StatusBar backgroundColor={COLORS.whiteColor} barStyle="dark-content" />
-      <DetailTop key={item.id} item={item} navigation={navigation} />
+      <DetailTop
+        key={item.id}
+        item={item}
+        navigation={navigation}
+        showBackIcon={true}
+      />
       <View style={styles.ingredientsContainer}>
         <Text style={styles.ingredientsText}>Ingredients</Text>
         <View style={styles.ingredients}>

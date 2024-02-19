@@ -11,7 +11,6 @@ import FavoritesScreen from '../screens/FavoritesScreen';
 import OrderHistoryScreen from '../screens/OrderHistoryScreen';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import Bell from 'react-native-vector-icons/FontAwesome';
 
 const Tab = createBottomTabNavigator();
 
@@ -68,9 +67,9 @@ const TabNavigator = () => {
         component={OrderHistoryScreen}
         options={{
           tabBarIcon: ({focused}) => (
-            <Bell
-              name="bell"
-              size={25}
+            <Icon
+              name="history"
+              size={35}
               color={focused ? COLORS.orangeColor : COLORS.whiteColor}
             />
           ),

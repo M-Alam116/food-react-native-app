@@ -1,6 +1,13 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import {StyleSheet, Text, View, Image, Dimensions} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  Dimensions,
+  Pressable,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {COLORS} from '../theme/Theme';
 import {TouchableOpacity} from 'react-native-gesture-handler';
@@ -24,13 +31,13 @@ const FoodCard = ({item}) => {
       </View>
       <View style={styles.priceContainer}>
         <Text style={styles.priceText}>PKR {item.price}</Text>
-        <TouchableOpacity onPress={() => toggleFavorite(item)}>
+        <Pressable onPress={() => toggleFavorite(item)}>
           <Icon
             name={isFavorite ? 'favorite' : 'favorite-outline'}
             size={22}
             color={isFavorite ? COLORS.orangeColor : COLORS.blackColor}
           />
-        </TouchableOpacity>
+        </Pressable>
       </View>
     </View>
   );

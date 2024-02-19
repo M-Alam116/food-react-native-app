@@ -54,7 +54,12 @@ const FavoritesScreen = ({navigation}) => {
           <EmptyComponent />
         ) : (
           favoriteData.map(item => (
-            <DetailTop key={item.id} item={item} navigation={navigation} />
+            <DetailTop
+              key={item.id}
+              item={item}
+              navigation={navigation}
+              showBackIcon={false}
+            />
           ))
         )}
       </ScrollView>
@@ -68,7 +73,7 @@ const styles = StyleSheet.create({
   },
   scrollViewContainer: {
     paddingBottom: 75,
-  }
+  },
 });
 
 export default FavoritesScreen;
