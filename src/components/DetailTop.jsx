@@ -3,43 +3,43 @@ import {Image, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {COLORS} from '../theme/Theme';
+import {useFavorites} from '../store/FavoriteContext';
 
-const DetailTop = ({
-  name,
-  price,
-  rating,
-  totalRatings,
-  description,
-  image,
-  navigation,
-}) => {
+const DetailTop = ({item, navigation}) => {
+  const {favorites, toggleFavorite} = useFavorites();
+  const isFavorite = favorites.some(favorite => favorite.id === item.id);
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.icons}>
         <TouchableOpacity onPress={() => navigation.pop()}>
           <Icon name="arrow-left" size={25} color={COLORS.blackColor} />
         </TouchableOpacity>
-        <TouchableOpacity>
-          <Icon name="heart" size={25} color={COLORS.blackColor} />
+        <TouchableOpacity onPress={() => toggleFavorite(item)}>
+          <Icon
+            name={isFavorite ? 'heart' : 'heart-o'}
+            size={25}
+            color={isFavorite ? COLORS.orangeColor : COLORS.blackColor}
+          />
         </TouchableOpacity>
       </View>
       <View style={styles.imageContainer}>
-        <Image source={{uri: image}} style={styles.image} />
+        <Image source={{uri: item.image}} style={styles.image} />
       </View>
       <View style={styles.detailContainer}>
-        <Text style={styles.name}>{name}</Text>
+        <Text style={styles.name}>{item.name}</Text>
         <View style={styles.priceContainer}>
           <View style={styles.ratingContainer}>
             <Icon name="star" size={18} color={COLORS.orangeColor} />
-            <Text style={styles.ratingText}>{rating}</Text>
-            <Text style={styles.ratingText}>({totalRatings})</Text>
+            <Text style={styles.ratingText}>{item.rating}</Text>
+            <Text style={styles.ratingText}>({item.totalRatings})</Text>
           </View>
-          <Text style={styles.price}>PKR {price}</Text>
+          <Text style={styles.price}>PKR {item.price}</Text>
         </View>
       </View>
       <View style={styles.detail}>
         <Text style={styles.detailText}>Details</Text>
-        <Text style={styles.description}>{description}</Text>
+        <Text style={styles.description}>{item.description}</Text>
       </View>
     </View>
   );

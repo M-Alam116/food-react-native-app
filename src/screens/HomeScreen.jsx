@@ -116,33 +116,6 @@ const HomeScreen = ({navigation}) => {
     flatListRef.current.scrollToIndex({index: 0});
   };
 
-  // Function to toggle favorite status
-  const toggleFavoriteStatus = async foodItemId => {
-    // Find the food item in the current category list
-    const updatedCategory = category.map(item => {
-      if (item.id === foodItemId) {
-        // Toggle the favorite status locally
-        const updatedItem = {...item, isFavorite: !item.isFavorite};
-        return updatedItem;
-      }
-      return item;
-    });
-    // Update the category state with the updated list
-    setCategory(updatedCategory);
-
-    // Update the Firestore document with the new favorite status
-    const foodItemRef = firestore()
-      .collection(activeCategory.toLowerCase())
-      .doc(foodItemId);
-    const foodItemDoc = await foodItemRef.get();
-    if (foodItemDoc.exists) {
-      // Update the Firestore document with the new favorite status
-      await foodItemRef.update({isFavorite: !foodItemDoc.data().isFavorite});
-    } else {
-      console.error('Food item not found in Firestore.');
-    }
-  };
-
   const tabHeight = useBottomTabBarHeight();
 
   return (
@@ -243,14 +216,7 @@ const HomeScreen = ({navigation}) => {
                   }}>
                   <FoodCard
                     key={item.id}
-                    id={item.id}
-                    type={item.type}
-                    image={item.image}
-                    name={item.name}
-                    subtitle={item.subtitle}
-                    price={item.price}
-                    onPressFavorite={() => toggleFavoriteStatus(item.id)}
-                    isFavorite={item.isFavorite}
+                    item={item}
                   />
                 </TouchableOpacity>
               );

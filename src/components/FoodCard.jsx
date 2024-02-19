@@ -4,29 +4,27 @@ import {StyleSheet, Text, View, Image, Dimensions} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {COLORS} from '../theme/Theme';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import {useFavorites} from '../store/FavoriteContext';
 
 const CARD_WIDTH = Dimensions.get('window').width * 0.35;
 
-const FoodCard = ({
-  image,
-  name,
-  subtitle,
-  price,
-  onPressFavorite,
-  isFavorite,
-}) => {
+const FoodCard = ({item}) => {
+  const {favorites, toggleFavorite} = useFavorites();
+
+  const isFavorite = favorites.some(favorite => favorite.id === item.id);
+
   return (
     <View style={styles.cardContainer}>
       <View>
-        <Image source={{uri: image}} style={styles.cardImage} />
+        <Image source={{uri: item.image}} style={styles.cardImage} />
       </View>
       <View>
-        <Text style={styles.nameText}>{name}</Text>
-        <Text style={styles.subText}>{subtitle}</Text>
+        <Text style={styles.nameText}>{item.name}</Text>
+        <Text style={styles.subText}>{item.subtitle}</Text>
       </View>
       <View style={styles.priceContainer}>
-        <Text style={styles.priceText}>PKR {price}</Text>
-        <TouchableOpacity onPress={onPressFavorite}>
+        <Text style={styles.priceText}>PKR {item.price}</Text>
+        <TouchableOpacity onPress={() => toggleFavorite(item)}>
           <Icon
             name={isFavorite ? 'favorite' : 'favorite-outline'}
             size={22}
