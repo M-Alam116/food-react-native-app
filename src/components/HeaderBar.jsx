@@ -5,7 +5,7 @@ import {COLORS} from '../theme/Theme';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
 
-const HeaderBar = ({title}) => {
+const HeaderBar = ({title, profileShown = true}) => {
   const navigation = useNavigation();
 
   const openDrawer = () => {
@@ -17,12 +17,16 @@ const HeaderBar = ({title}) => {
         <Icon name="menu" color={COLORS.blackColor} size={30} />
       </TouchableOpacity>
       <Text style={styles.HeaderText}>{title}</Text>
-      <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-        <Image
-          source={require('../assets/other/avatar.png')}
-          style={styles.profile}
-        />
-      </TouchableOpacity>
+      {profileShown ? (
+        <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+          <Image
+            source={require('../assets/other/avatar.png')}
+            style={styles.profile}
+          />
+        </TouchableOpacity>
+      ) : (
+        <Text></Text>
+      )}
     </View>
   );
 };
