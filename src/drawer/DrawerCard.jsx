@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
 import {COLORS} from '../theme/Theme';
 import Icon from 'react-native-vector-icons/AntDesign';
@@ -15,12 +15,14 @@ const DrawerCard = ({state, navigation}) => {
   const userId = currrentuser.uid;
   const db = firestore();
 
-  const getUsername = async () => {
-    const user = await db.collection('users').doc(userId).get();
-    setUsername(user._data.name);
-  };
+  useEffect(() => {
+    const getUsername = async () => {
+      const user = await db.collection('users').doc(userId).get();
+      setUsername(user._data.name);
+    };
 
-  getUsername();
+    getUsername();
+  }, [db, userId]);
 
   const links = [
     {

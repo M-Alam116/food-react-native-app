@@ -7,44 +7,61 @@ import {
   Text,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import HeaderBar from '../components/HeaderBar';
 import {ScrollView} from 'react-native-gesture-handler';
 import {COLORS} from '../theme/Theme';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Icon1 from 'react-native-vector-icons/MaterialIcons';
 
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+
 const UserProfileScreen = () => {
+  const [username, setUsername] = useState('');
+  const currentuser = auth().currentUser;
+  const userId = currentuser.uid;
+  const db = firestore();
+
+  useEffect(() => {
+    const getUsername = async () => {
+      const user = await db.collection('users').doc(userId).get();
+      setUsername(user._data.name);
+    };
+
+    getUsername();
+  }, []);
+
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={COLORS.whiteColor} barStyle="dark-content" />
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContainer}>
-        <HeaderBar title={'Profile'} profileShown={false}/>
+        <HeaderBar title={'Profile'} profileShown={false} />
 
         <ImageBackground
-          source={require('../assets/other/user.jpg')}
+          source={require('../assets/other/blank-profile.png')}
           style={styles.bgImage}
         />
 
         <View style={styles.imageContainer}>
           <Image
-            source={require('../assets/other/user.jpg')}
+            source={require('../assets/other/blank-profile.png')}
             style={styles.profileImage}
           />
         </View>
 
-        <Text style={styles.name}>Muhammad Alam</Text>
+        <Text style={styles.name}>{username}</Text>
 
         <View style={styles.bottomContainer}>
           <View style={styles.info}>
             <Icon name="user" size={30} color={COLORS.blackColor} />
-            <Text style={styles.infoText}>Muhammad Alam</Text>
+            <Text style={styles.infoText}>{username}</Text>
           </View>
           <View style={styles.info}>
             <Icon1 name="email" size={30} color={COLORS.blackColor} />
-            <Text style={styles.infoText}>alam@gmail.com</Text>
+            <Text style={styles.infoText}>{currentuser.email}</Text>
           </View>
         </View>
       </ScrollView>
