@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Image,
   Pressable,
@@ -20,15 +20,24 @@ import HeaderBar from '../components/HeaderBar';
 import {COLORS} from '../theme/Theme';
 
 const SettingScreen = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [oldPassword, setOldPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [selectedImage, setSelectedImage] = useState(null);
-
   const currentUser = auth().currentUser;
   const userId = currentUser.uid;
   const db = firestore();
+
+  useEffect(() => {
+    const getUsername = async () => {
+      const user = await db.collection('users').doc(userId).get();
+      setName(user._data.name);
+    };
+
+    getUsername();
+  }, [userId, db]);
+
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState(currentUser.email);
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const handleSaveChanges = async () => {
     try {
@@ -81,6 +90,9 @@ const SettingScreen = () => {
     } catch (error) {
       console.error('Error updating user information:', error.message);
     }
+
+    setNewPassword('');
+    setOldPassword('');
   };
 
   // Function to handle image selection

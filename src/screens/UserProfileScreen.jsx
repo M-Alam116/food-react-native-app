@@ -30,7 +30,7 @@ const UserProfileScreen = () => {
     };
 
     getUsername();
-  }, []);
+  }, [userId, db]);
 
   return (
     <View style={styles.container}>
