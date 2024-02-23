@@ -4,9 +4,11 @@ import {Image, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {COLORS} from '../theme/Theme';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
+import {useFavorites} from '../store/FavoriteContext';
 
 const HeaderBar = ({title, profileShown = true}) => {
   const navigation = useNavigation();
+  const {user} = useFavorites();
 
   const openDrawer = () => {
     navigation.openDrawer();
@@ -19,10 +21,14 @@ const HeaderBar = ({title, profileShown = true}) => {
       <Text style={styles.HeaderText}>{title}</Text>
       {profileShown ? (
         <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-          <Image
-            source={require('../assets/other/avatar.png')}
-            style={styles.profile}
-          />
+          {user.profileImg ? (
+            <Image source={{uri: user.profileImg}} style={styles.profile} />
+          ) : (
+            <Image
+              source={require('../assets/other/blank-profile.png')}
+              style={styles.profile}
+            />
+          )}
         </TouchableOpacity>
       ) : (
         <Text></Text>
@@ -45,9 +51,9 @@ const styles = StyleSheet.create({
     opacity: 0.8,
   },
   profile: {
-    width: 30,
-    height: 30,
-    borderRadius: 10,
+    width: 35,
+    height: 35,
+    borderRadius: 100,
   },
 });
 

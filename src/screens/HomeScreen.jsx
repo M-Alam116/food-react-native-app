@@ -121,7 +121,9 @@ const HomeScreen = ({navigation}) => {
   return (
     <View style={styles.screenContainer}>
       <StatusBar backgroundColor={COLORS.whiteColor} barStyle="dark-content" />
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollViewContainer}>
         <HeaderBar title="Search Food" />
 
         <View style={styles.mainText}>
@@ -214,10 +216,7 @@ const HomeScreen = ({navigation}) => {
                       item: item,
                     });
                   }}>
-                  <FoodCard
-                    key={item.id}
-                    item={item}
-                  />
+                  <FoodCard key={item.id} item={item} />
                 </TouchableOpacity>
               );
             }}
@@ -254,6 +253,9 @@ const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
     backgroundColor: COLORS.whiteColor,
+  },
+  scrollViewContainer: {
+    flexGrow: 1,
   },
   mainText: {
     marginVertical: 10,
