@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
   Image,
   Pressable,
@@ -10,48 +10,62 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  ToastAndroid,
+  ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import ImagePicker from 'react-native-image-picker';
 
 import HeaderBar from '../components/HeaderBar';
 import {COLORS} from '../theme/Theme';
 
+import DocumentPicker from 'react-native-document-picker';
+import storage from '@react-native-firebase/storage';
+import {useFavorites} from '../store/FavoriteContext';
+
 const SettingScreen = () => {
+  const {user} = useFavorites();
+
+  const [name, setName] = useState(user.name);
+  const [email, setEmail] = useState(user.email);
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [imageData, setImageData] = useState(null);
+  const [error, setError] = useState('');
+  const [imageLoading, setImageLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const currentUser = auth().currentUser;
   const userId = currentUser.uid;
   const db = firestore();
 
-  useEffect(() => {
-    const getUsername = async () => {
-      const user = await db.collection('users').doc(userId).get();
-      setName(user._data.name);
-    };
-
-    getUsername();
-  }, [userId, db]);
-
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState(currentUser.email);
-  const [oldPassword, setOldPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [selectedImage, setSelectedImage] = useState(null);
-
   const handleSaveChanges = async () => {
     try {
+      setLoading(true);
       const userRef = db.collection('users').doc(userId);
 
       // Update name
-      await userRef.update({
-        name: name,
-      });
+      if (name) {
+        await userRef.update({
+          name: name,
+        });
+      }
 
       // Update email
-      if (email !== currentUser.email) {
-        await currentUser.updateEmail(email);
-      }
+      // if (email && email !== currentUser.email) {
+      //   try {
+      //     const response = await currentUser.updateEmail(email);
+      //     if (response) {
+      //       await userRef.update({
+      //         email: email,
+      //       });
+      //     }
+      //   } catch (err) {
+      //     console.log(err.message);
+      //     setError(err.message);
+      //   }
+      // }
 
       // Change password
       if (oldPassword && newPassword) {
@@ -66,56 +80,57 @@ const SettingScreen = () => {
         await currentUser.updatePassword(newPassword);
       }
 
-      // Update image
-      if (selectedImage) {
-        const imageUri = selectedImage.uri;
-        const response = await fetch(imageUri);
-        const blob = await response.blob();
-
-        // Upload the image to Firebase Storage
-        const storageRef = db.storage().ref().child(`userImages/${userId}`);
-        await storageRef.put(blob);
-
-        // Get the download URL of the uploaded image
-        const downloadURL = await storageRef.getDownloadURL();
-
-        // Update user document with the download URL of the image
-        await userRef.update({
-          image: downloadURL,
-        });
-      }
-
-      // Display success message or navigate to another screen
-      console.log('User information updated successfully');
-    } catch (error) {
-      console.error('Error updating user information:', error.message);
+      ToastAndroid.show('Profile updated successfully', ToastAndroid.LONG);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
 
     setNewPassword('');
     setOldPassword('');
   };
 
-  // Function to handle image selection
-  const handleEditImage = () => {
-    const options = {
-      title: 'Select Avatar',
-      storageOptions: {
-        skipBackup: true,
-        path: 'images',
-      },
-    };
-
-    ImagePicker.showImagePicker(options, response => {
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else {
-        const source = {uri: response.uri};
-        setSelectedImage(source);
-      }
-    });
+  const handleDocumentPicker = async () => {
+    try {
+      const response = await DocumentPicker.pickSingle({
+        type: [DocumentPicker.types.images],
+      });
+      setImageData(response);
+    } catch (err) {
+      setError(err.message);
+    }
   };
+
+  const uploadImage = async () => {
+    try {
+      setImageLoading(true);
+      const reference = storage().ref(`/userImages/${userId}`);
+      const response = await reference.putFile(imageData.uri);
+
+      if (response.state === 'success') {
+        const downloadURL = await reference.getDownloadURL();
+        const userRef = db.collection('users').doc(userId);
+
+        // Update profileImg with the download URL
+        await userRef.update({
+          profileImg: downloadURL,
+        });
+
+        setImageData(null);
+      } else {
+        throw new Error('Image upload failed');
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setImageLoading(false);
+    }
+  };
+
+  setTimeout(() => {
+    setError('');
+  }, 5000);
 
   return (
     <View style={styles.container}>
@@ -125,18 +140,42 @@ const SettingScreen = () => {
         contentContainerStyle={styles.scrollContainer}>
         <HeaderBar title={'Edit Profile'} profileShown={false} />
 
-        <View style={styles.imageContainer}>
-          <Image
-            source={
-              selectedImage
-                ? selectedImage
-                : require('../assets/other/user.jpg')
-            }
-            style={styles.profileImage}
-          />
-          <Pressable style={styles.editBtn} onPress={handleEditImage}>
-            <Icon name="edit" size={25} color={COLORS.blackColor} />
-          </Pressable>
+        <View style={styles.mainContainer}>
+          <View style={styles.imageContainer}>
+            {user.profileImg ? (
+              <Image
+                source={{uri: user.profileImg}}
+                style={styles.profileImage}
+              />
+            ) : (
+              <Image
+                source={require('../assets/other/blank-profile.png')}
+                style={styles.profileImage}
+              />
+            )}
+
+            <Pressable style={styles.uploadBtn} onPress={uploadImage}>
+              {imageLoading ? (
+                <ActivityIndicator size="small" color={COLORS.whiteColor} />
+              ) : (
+                <Text style={styles.uploadText}>Upload</Text>
+              )}
+            </Pressable>
+          </View>
+
+          <View style={styles.imageContainer}>
+            <Image
+              source={
+                imageData
+                  ? imageData
+                  : require('../assets/other/blank-profile.png')
+              }
+              style={styles.profileImage}
+            />
+            <Pressable style={styles.editBtn} onPress={handleDocumentPicker}>
+              <Icon name="edit" size={25} color={COLORS.blackColor} />
+            </Pressable>
+          </View>
         </View>
 
         <View style={styles.infoContainer}>
@@ -151,6 +190,7 @@ const SettingScreen = () => {
           <View style={styles.fieldContainer}>
             <Text style={styles.fieldName}>Email</Text>
             <TextInput
+              readOnly
               style={styles.inputField}
               value={email}
               onChangeText={value => setEmail(value)}
@@ -179,8 +219,14 @@ const SettingScreen = () => {
             </View>
           </View>
 
+          {error && <Text style={styles.errorText}>{error}</Text>}
+
           <TouchableOpacity style={styles.saveBtn} onPress={handleSaveChanges}>
-            <Text style={styles.btnText}>Save</Text>
+            {loading ? (
+              <ActivityIndicator size="small" color={COLORS.whiteColor} />
+            ) : (
+              <Text style={styles.btnText}>Save</Text>
+            )}
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -195,11 +241,17 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
   },
+  mainContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    gap: 30,
+  },
   imageContainer: {
+    gap: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 30,
-    gap: 5,
+    marginTop: 20,
   },
   profileImage: {
     width: 120,
@@ -245,6 +297,24 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.orangeColor,
     borderRadius: 8,
     padding: 20,
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 14,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  uploadBtn: {
+    backgroundColor: COLORS.orangeColor,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 5,
+  },
+  uploadText: {
+    fontSize: 14,
+    color: COLORS.whiteColor,
+    fontWeight: '700',
+    opacity: 0.9,
   },
 });
 

@@ -9,6 +9,8 @@ export const useFavorites = () => useContext(FavoriteContext);
 
 export const FavoriteProvider = ({children}) => {
   const [favorites, setFavorites] = useState([]);
+  const [user, setUser] = useState(null);
+
   const currentUser = auth().currentUser;
 
   useEffect(() => {
@@ -17,6 +19,8 @@ export const FavoriteProvider = ({children}) => {
       .doc(currentUser.uid)
       .onSnapshot(snapshot => {
         const userData = snapshot._data;
+        const {name, email, profileImg} = userData;
+        setUser({name, email, profileImg});
         if (userData && userData.favorite) {
           setFavorites(userData.favorite);
         }
@@ -46,7 +50,7 @@ export const FavoriteProvider = ({children}) => {
   };
 
   return (
-    <FavoriteContext.Provider value={{favorites, toggleFavorite}}>
+    <FavoriteContext.Provider value={{favorites, toggleFavorite, user}}>
       {children}
     </FavoriteContext.Provider>
   );

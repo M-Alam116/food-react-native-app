@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
 import {COLORS} from '../theme/Theme';
 import Icon from 'react-native-vector-icons/AntDesign';
@@ -7,22 +7,10 @@ import Exit from 'react-native-vector-icons/MaterialIcons';
 
 import {StackActions} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
+import {useFavorites} from '../store/FavoriteContext';
 
 const DrawerCard = ({state, navigation}) => {
-  const [username, setUsername] = useState('');
-  const currrentuser = auth().currentUser;
-  const userId = currrentuser.uid;
-  const db = firestore();
-
-  useEffect(() => {
-    const getUsername = async () => {
-      const user = await db.collection('users').doc(userId).get();
-      setUsername(user._data.name);
-    };
-
-    getUsername();
-  }, [db, userId]);
+  const {user} = useFavorites();
 
   const links = [
     {
@@ -46,12 +34,19 @@ const DrawerCard = ({state, navigation}) => {
     <View style={styles.container}>
       <View>
         <View style={styles.infoContainer}>
-          <Image
-            source={require('../assets/other/avatar.png')}
-            style={styles.profileImage}
-          />
-          <Text style={styles.nameText}>{username}</Text>
-          <Text style={styles.emailText}>{currrentuser.email}</Text>
+          {user.profileImg ? (
+            <Image
+              source={{uri: user.profileImg}}
+              style={styles.profileImage}
+            />
+          ) : (
+            <Image
+              source={require('../assets/other/blank-profile.png')}
+              style={styles.profileImage}
+            />
+          )}
+          <Text style={styles.nameText}>{user.name}</Text>
+          <Text style={styles.emailText}>{user.email}</Text>
         </View>
 
         <View style={styles.linksContainer}>

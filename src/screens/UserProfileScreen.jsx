@@ -7,30 +7,16 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import HeaderBar from '../components/HeaderBar';
 import {ScrollView} from 'react-native-gesture-handler';
 import {COLORS} from '../theme/Theme';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Icon1 from 'react-native-vector-icons/MaterialIcons';
-
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
+import {useFavorites} from '../store/FavoriteContext';
 
 const UserProfileScreen = () => {
-  const [username, setUsername] = useState('');
-  const currentuser = auth().currentUser;
-  const userId = currentuser.uid;
-  const db = firestore();
-
-  useEffect(() => {
-    const getUsername = async () => {
-      const user = await db.collection('users').doc(userId).get();
-      setUsername(user._data.name);
-    };
-
-    getUsername();
-  }, [userId, db]);
+  const {user} = useFavorites();
 
   return (
     <View style={styles.container}>
@@ -40,28 +26,44 @@ const UserProfileScreen = () => {
         contentContainerStyle={styles.scrollContainer}>
         <HeaderBar title={'Profile'} profileShown={false} />
 
-        <ImageBackground
-          source={require('../assets/other/blank-profile.png')}
-          style={styles.bgImage}
-        />
-
-        <View style={styles.imageContainer}>
-          <Image
-            source={require('../assets/other/blank-profile.png')}
-            style={styles.profileImage}
-          />
+        <View>
+          {user.profileImg ? (
+            <ImageBackground
+              source={{uri: user.profileImg}}
+              style={styles.bgImage}
+            />
+          ) : (
+            <ImageBackground
+              source={require('../assets/other/blank-profile.png')}
+              style={styles.bgImage}
+            />
+          )}
         </View>
 
-        <Text style={styles.name}>{username}</Text>
+        <View style={styles.imageContainer}>
+          {user.profileImg ? (
+            <Image
+              source={{uri: user.profileImg}}
+              style={styles.profileImage}
+            />
+          ) : (
+            <Image
+              source={require('../assets/other/blank-profile.png')}
+              style={styles.profileImage}
+            />
+          )}
+        </View>
+
+        <Text style={styles.name}>{user.name}</Text>
 
         <View style={styles.bottomContainer}>
           <View style={styles.info}>
             <Icon name="user" size={30} color={COLORS.blackColor} />
-            <Text style={styles.infoText}>{username}</Text>
+            <Text style={styles.infoText}>{user.name}</Text>
           </View>
           <View style={styles.info}>
             <Icon1 name="email" size={30} color={COLORS.blackColor} />
-            <Text style={styles.infoText}>{currentuser.email}</Text>
+            <Text style={styles.infoText}>{user.email}</Text>
           </View>
         </View>
       </ScrollView>
