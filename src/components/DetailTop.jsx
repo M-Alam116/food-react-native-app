@@ -1,5 +1,12 @@
 /* eslint-disable prettier/prettier */
-import {Image, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Pressable,
+} from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {COLORS} from '../theme/Theme';
@@ -10,7 +17,9 @@ const DetailTop = ({item, navigation, showBackIcon}) => {
   const isFavorite = favorites.some(favorite => favorite.id === item.id);
 
   return (
-    <View style={styles.mainContainer}>
+    <Pressable
+      style={styles.mainContainer}
+      onPress={() => navigation.navigate('Detail', {item})}>
       <View style={styles.icons}>
         {showBackIcon && (
           <TouchableOpacity onPress={() => navigation.pop()}>
@@ -45,7 +54,7 @@ const DetailTop = ({item, navigation, showBackIcon}) => {
         <Text style={styles.detailText}>Details</Text>
         <Text style={styles.description}>{item.description}</Text>
       </View>
-    </View>
+    </Pressable>
   );
 };
 

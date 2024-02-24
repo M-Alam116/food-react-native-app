@@ -16,18 +16,20 @@ export const FavoriteProvider = ({children}) => {
   useEffect(() => {
     const unsubscribe = firestore()
       .collection('users')
-      .doc(currentUser.uid)
+      .doc(currentUser?.uid)
       .onSnapshot(snapshot => {
-        const userData = snapshot._data;
-        const {name, email, profileImg} = userData;
-        setUser({name, email, profileImg});
+        const userData = snapshot?._data;
+        if (userData) {
+          const {name, email, profileImg} = userData;
+          setUser({name, email, profileImg});
+        }
         if (userData && userData.favorite) {
           setFavorites(userData.favorite);
         }
       });
 
     return () => unsubscribe();
-  }, [currentUser.uid]);
+  }, [currentUser?.uid]);
 
   const toggleFavorite = async item => {
     try {

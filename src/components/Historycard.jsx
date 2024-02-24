@@ -4,7 +4,18 @@ import React from 'react';
 import {COLORS} from '../theme/Theme';
 import OrderItemCard from './OrderItemCard';
 
-const Historycard = () => {
+const Historycard = ({order}) => {
+  const formatTime = timestamp => {
+    const date = new Date(timestamp);
+    return date.toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+    });
+  };
+
   return (
     <View style={styles.container}>
       <View style={{gap: 5}}>
@@ -13,14 +24,14 @@ const Historycard = () => {
           <Text style={styles.infoText}>Total Amount</Text>
         </View>
         <View style={styles.innerContainer}>
-          <Text style={styles.timeText}>Fri Feb 23 2024 11:14:30 PM</Text>
-          <Text style={styles.timeText}>PKR 2000</Text>
+          <Text style={styles.timeText}>{formatTime(order.timestamp.seconds * 1000)}</Text>
+          <Text style={styles.timeText}>PKR {order.totalPrice}</Text>
         </View>
       </View>
       <View style={{gap: 20}}>
-        <OrderItemCard />
-        <OrderItemCard />
-        <OrderItemCard />
+        {order.items.map((item, index) => (
+          <OrderItemCard key={index} item={item} />
+        ))}
       </View>
     </View>
   );
@@ -47,7 +58,7 @@ const styles = StyleSheet.create({
   },
   timeText: {
     fontSize: 18,
-    fontWeight: '700',
+    fontWeight: '900',
     color: COLORS.orangeColor,
     opacity: 0.8,
   },

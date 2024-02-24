@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {COLORS} from '../theme/Theme';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import {useNavigation} from '@react-navigation/native';
 
 const CartItem = ({item}) => {
   const db = firestore();
@@ -68,8 +69,12 @@ const CartItem = ({item}) => {
 
   const [line1, line2] = splitItemName(item.name, 2);
 
+  const navigation = useNavigation();
+
   return (
-    <TouchableOpacity style={styles.container}>
+    <TouchableOpacity
+      style={styles.container}
+      onPress={() => navigation.navigate('Detail', {item})}>
       <View>
         <Image source={{uri: item.image}} style={styles.image} />
       </View>

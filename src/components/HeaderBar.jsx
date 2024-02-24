@@ -21,7 +21,7 @@ const HeaderBar = ({title, profileShown = true}) => {
       <Text style={styles.HeaderText}>{title}</Text>
       {profileShown ? (
         <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-          {user.profileImg ? (
+          {user?.profileImg ? (
             <Image source={{uri: user.profileImg}} style={styles.profile} />
           ) : (
             <Image

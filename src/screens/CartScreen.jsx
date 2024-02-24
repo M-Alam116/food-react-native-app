@@ -6,6 +6,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Alert,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import CartItem from '../components/CartItem';
@@ -19,6 +20,7 @@ import EmptyComponent from '../components/EmptyComponent';
 
 const CartScreen = () => {
   const [cartData, setCartData] = useState([]);
+  const [orderHistoryData, setOrderHistoryData] = useState([]);
   const [loading, setLoading] = useState(true);
   const currentuser = auth().currentUser;
   const db = firestore();
@@ -30,6 +32,7 @@ const CartScreen = () => {
         if (doc.exists) {
           const userCart = doc._data.cart;
           setCartData(userCart);
+          setOrderHistoryData(doc._data.orderhistory);
         } else {
           throw new Error('User data not found');
         }
@@ -55,6 +58,45 @@ const CartScreen = () => {
       totalPrice += item.price * item.quantity;
     });
     return totalPrice;
+  };
+
+  const handleOrderHistory = async () => {
+    try {
+      const checkoutTimestamp = new Date();
+
+      const currentCheckout = {
+        timestamp: checkoutTimestamp,
+        items: cartData,
+        totalPrice: getTotalPrice(),
+      };
+
+      const updatedOrderHistory = [...orderHistoryData, currentCheckout];
+
+      await db.collection('users').doc(currentuser.uid).update({
+        orderhistory: updatedOrderHistory,
+      });
+
+      await db.collection('users').doc(currentuser.uid).update({
+        cart: [],
+      });
+
+      setOrderHistoryData(updatedOrderHistory);
+      setCartData([]);
+
+      Alert.alert(
+        'Order Placed',
+        'Your order has been successfully placed.',
+        [
+          {
+            text: 'OK',
+            onPress: () => console.log('OK Pressed'),
+          },
+        ],
+        {cancelable: false},
+      );
+    } catch (error) {
+      console.log('Error placing order: ', error.message);
+    }
   };
 
   const tabBarHeight = useBottomTabBarHeight();
@@ -86,7 +128,9 @@ const CartScreen = () => {
             <Text style={styles.totalPriceText}>Total Price</Text>
             <Text style={styles.totalPriceText}>PKR {getTotalPrice()}</Text>
           </View>
-          <TouchableOpacity style={styles.checkoutBtn}>
+          <TouchableOpacity
+            style={styles.checkoutBtn}
+            onPress={handleOrderHistory}>
             <Text style={styles.checkoutText}>Checkout</Text>
           </TouchableOpacity>
         </View>
