@@ -23,7 +23,7 @@ const OrderHistoryScreen = () => {
         const docRef = firestore().collection('users').doc(currentuser.uid);
 
         const unsubscribe = docRef.onSnapshot(snapshot => {
-          if (snapshot.exists) {
+          if (snapshot?.exists) {
             const historyData = snapshot._data.orderhistory;
             setOrderHistoryData(historyData);
           }

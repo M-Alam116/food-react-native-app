@@ -53,7 +53,7 @@ const Signin = ({ navigation }) => {
         contentContainerStyle={styles.scrollViewContainer}>
         <View style={styles.logoContainer}>
           <Image
-            source={require('../assets/logos/food-logo1.png')}
+            source={require('../assets/other/logo.png')}
             style={styles.logo}
           />
         </View>
@@ -121,8 +121,8 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
   logo: {
-    width: 180,
-    height: 80,
+    width: 120,
+    height: 120,
   },
   formContainer: {
     gap: 30,

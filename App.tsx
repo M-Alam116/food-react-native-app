@@ -11,7 +11,6 @@ import SplashScreen from './src/screens/SplashScreen';
 import Signin from './src/screens/Signin';
 import Signup from './src/screens/Signup';
 import DetailScreen from './src/screens/DetailScreen';
-import PaymentScreen from './src/screens/PaymentScreen';
 
 import {FavoriteProvider} from './src/store/FavoriteContext';
 
@@ -45,11 +44,6 @@ const App = () => {
           <Stack.Screen
             name="Detail"
             component={DetailScreen}
-            options={{headerShown: false, animation: 'slide_from_bottom'}}
-          />
-          <Stack.Screen
-            name="Payment"
-            component={PaymentScreen}
             options={{headerShown: false, animation: 'slide_from_bottom'}}
           />
         </Stack.Navigator>

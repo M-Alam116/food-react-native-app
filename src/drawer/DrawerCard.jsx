@@ -34,7 +34,7 @@ const DrawerCard = ({state, navigation}) => {
     <View style={styles.container}>
       <View>
         <View style={styles.infoContainer}>
-          {user.profileImg ? (
+          {user?.profileImg ? (
             <Image
               source={{uri: user.profileImg}}
               style={styles.profileImage}
