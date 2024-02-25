@@ -95,6 +95,7 @@ const SettingScreen = () => {
     try {
       const response = await DocumentPicker.pickSingle({
         type: [DocumentPicker.types.images],
+        copyTo: 'cachesDirectory', // for solving storage error
       });
       setImageData(response);
     } catch (err) {
@@ -106,7 +107,7 @@ const SettingScreen = () => {
     try {
       setImageLoading(true);
       const reference = storage().ref(`/userImages/${userId}`);
-      const response = await reference.putFile(imageData.uri);
+      const response = await reference.putFile(imageData.fileCopyUri); // we use copyTo option so that we access have to fileCopyUri instead of uri
 
       if (response.state === 'success') {
         const downloadURL = await reference.getDownloadURL();
@@ -142,7 +143,7 @@ const SettingScreen = () => {
 
         <View style={styles.mainContainer}>
           <View style={styles.imageContainer}>
-            {user.profileImg ? (
+            {user?.profileImg ? (
               <Image
                 source={{uri: user.profileImg}}
                 style={styles.profileImage}

@@ -63,12 +63,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    height: 150,
-    width: 150,
+    height: 130,
+    width: 130,
   },
   name: {
-    fontSize: 24,
-    fontWeight: '700',
+    fontSize: 22,
+    fontWeight: '900',
     color: COLORS.blackColor,
   },
   priceText: {

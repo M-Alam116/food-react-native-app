@@ -10,17 +10,19 @@ import {
   View,
   TextInput,
   Pressable,
+  ActivityIndicator,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
-import { COLORS } from '../theme/Theme';
+import {COLORS} from '../theme/Theme';
 import auth from '@react-native-firebase/auth';
-import { StackActions } from '@react-navigation/native';
+import {StackActions} from '@react-navigation/native';
 
-const Signin = ({ navigation }) => {
+const Signin = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleSignIn = async () => {
     try {
@@ -28,16 +30,21 @@ const Signin = ({ navigation }) => {
         setError('Email and Password fields are required');
         return;
       }
+
+      setLoading(true);
       const response = await auth().signInWithEmailAndPassword(email, password);
 
       if (response.user) {
-        navigation.dispatch(StackActions.replace('Drawer'))  // use dispatch so that can can't move back to splash screen
+        navigation.dispatch(StackActions.replace('Drawer')); // use dispatch so that can can't move back to splash screen
         setEmail('');
         setPassword('');
         setError('');
       }
+
+      setLoading(false);
     } catch (err) {
       setError(err.message);
+      setLoading(false);
     }
   };
 
@@ -73,7 +80,11 @@ const Signin = ({ navigation }) => {
             onChangeText={value => setPassword(value)}
           />
           <Pressable style={styles.signinButton} onPress={handleSignIn}>
-            <Text style={styles.signinText}>Sign In</Text>
+            {loading ? (
+              <ActivityIndicator size="small" color={COLORS.whiteColor} />
+            ) : (
+              <Text style={styles.signinText}>Sign In</Text>
+            )}
           </Pressable>
           {error && <Text style={styles.errorText}>{error}</Text>}
         </View>
@@ -95,7 +106,7 @@ const Signin = ({ navigation }) => {
               setError('');
             }}>
             <Text
-              style={[styles.navigateText, { opacity: 0.7, fontWeight: '900' }]}>
+              style={[styles.navigateText, {opacity: 0.7, fontWeight: '900'}]}>
               Sign up
             </Text>
           </Pressable>
@@ -121,7 +132,7 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
   logo: {
-    width: 120,
+    width: 135,
     height: 120,
   },
   formContainer: {

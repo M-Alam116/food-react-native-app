@@ -11,6 +11,7 @@ import {
   TextInput,
   Pressable,
   ToastAndroid,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useState} from 'react';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
@@ -23,6 +24,7 @@ const Signup = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const db = firestore();
 
@@ -33,6 +35,7 @@ const Signup = ({navigation}) => {
         return;
       }
 
+      setLoading(true);
       const response = await auth().createUserWithEmailAndPassword(
         email,
         password,
@@ -52,7 +55,11 @@ const Signup = ({navigation}) => {
       setName('');
       setEmail('');
       setPassword('');
+      setLoading(false);
+
+      navigation.navigate('Signin');
     } catch (err) {
+      setLoading(false);
       setError(err.message);
     }
   };
@@ -95,7 +102,11 @@ const Signup = ({navigation}) => {
             onChangeText={value => setPassword(value)}
           />
           <Pressable style={styles.signinButton} onPress={handleSignUp}>
-            <Text style={styles.signinText}>Sign Up</Text>
+            {loading ? (
+              <ActivityIndicator size="small" color={COLORS.whiteColor} />
+            ) : (
+              <Text style={styles.signinText}>Sign Up</Text>
+            )}
           </Pressable>
           {error && <Text style={styles.errorText}>{error}</Text>}
         </View>
@@ -144,7 +155,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   logo: {
-    width: 120,
+    width: 135,
     height: 120,
   },
   formContainer: {

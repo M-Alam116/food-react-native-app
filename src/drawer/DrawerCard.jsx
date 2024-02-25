@@ -45,8 +45,8 @@ const DrawerCard = ({state, navigation}) => {
               style={styles.profileImage}
             />
           )}
-          <Text style={styles.nameText}>{user.name}</Text>
-          <Text style={styles.emailText}>{user.email}</Text>
+          <Text style={styles.nameText}>{user?.name}</Text>
+          <Text style={styles.emailText}>{user?.email}</Text>
         </View>
 
         <View style={styles.linksContainer}>

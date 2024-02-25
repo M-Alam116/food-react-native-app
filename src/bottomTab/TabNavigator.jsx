@@ -81,7 +81,7 @@ const TabNavigator = () => {
 
 const styles = StyleSheet.create({
   tabBarStyle: {
-    height: 80,
+    height: 70,
     position: 'absolute',
     backgroundColor: COLORS.blackColor,
     borderTopWidth: 0,

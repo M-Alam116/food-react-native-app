@@ -14,22 +14,28 @@ export const FavoriteProvider = ({children}) => {
   const currentUser = auth().currentUser;
 
   useEffect(() => {
-    const unsubscribe = firestore()
-      .collection('users')
-      .doc(currentUser?.uid)
-      .onSnapshot(snapshot => {
-        const userData = snapshot?._data;
-        if (userData) {
-          const {name, email, profileImg} = userData;
-          setUser({name, email, profileImg});
-        }
-        if (userData && userData.favorite) {
-          setFavorites(userData.favorite);
-        }
-      });
+    const unsubscribeAuth = auth().onAuthStateChanged(async authUser => {
+      if (authUser) {
+        const userRef = firestore()
+        .collection('users')
+        .doc(authUser?.uid)
+        .onSnapshot(snapshot => {
+          const userData = snapshot?._data;
+          if (userData) {
+            const {name, email, profileImg} = userData;
+            setUser({name, email, profileImg});
+          }
+          if (userData && userData.favorite) {
+            setFavorites(userData.favorite);
+          }
+        });
+      }
+    });
 
-    return () => unsubscribe();
-  }, [currentUser?.uid]);
+    return () => {
+      unsubscribeAuth();
+    };
+  }, []);
 
   const toggleFavorite = async item => {
     try {
